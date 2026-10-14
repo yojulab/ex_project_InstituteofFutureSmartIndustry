@@ -7,9 +7,9 @@
 
 ---
 
-## 1. 프로젝트 5대 절대 가드레일 (Strict Invariants)
+## 1. 프로젝트 6대 절대 가드레일 (Strict Invariants)
 
-모든 에이전트는 아래 5대 원칙을 절대적으로 준수하며, 위배되는 코드나 아키텍처를 작성하지 않는다:
+모든 에이전트는 아래 6대 원칙을 절대적으로 준수하며, 위배되는 코드나 아키텍처를 작성하지 않는다:
 
 1. **AI 안내 도우미(챗봇/RAG/LLM 생성) 일체 제외**:
    - 대화형 챗봇, LLM 답변 생성, RAG 파이프라인은 본 프로젝트 범위에서 명시적으로 제외 확정됨 (§1.3).
@@ -24,7 +24,13 @@
    - 외부 공인 IP 미할당(No Public IP), 사설 서브넷(27017) 내부 통신, Serverless VPC Access 커넥터 연동, 매일 새벽 GCS 일일 자동 백업 스크립트 구축.
 5. **관리자 직접 입력 인증 (Google OAuth 배제)**:
    - 구글 소셜 로그인을 사용하지 않고, **아이디/비밀번호 직접 입력 방식** 확정 (§4.6, §7.1).
+   - 로그인 식별자는 **사용자명(`username`) 및 기관 이메일(`email`)** 입력을 모두 지원.
    - Argon2id / bcrypt 해싱, 5회 연속 실패 시 15분 계정 잠금, IP 레이트리밋, HttpOnly/Secure/SameSite=Strict 세션 쿠키 격리.
+6. **환경 중요 변수 `.env` 엄격 관리 (코드 내 디폴트값 전면 금지)**:
+   - `MONGODB_URI`, `SESSION_SECRET`, `INITIAL_ADMIN_*` 등 모든 중요 환경 변수는 반드시 `.env` 파일(운영: Secret Manager)을 통해서만 관리.
+   - 코드베이스(`src/`, `infra/`, 스크립트) 내 `process.env.XXX || 'default'` 형태의 대체값(Fallback) 및 하드코딩된 자격증명/URI/시크릿 작성 일체 금지.
+   - 필수 환경변수 누락 또는 규격 미달 시 즉시 명시적 예외(`CRITICAL CONFIG ERROR`)를 발생시켜 비인가 실행을 원천 차단.
+   - 클라이언트 번들에 관리자 비밀번호나 테스트 계정 정보를 하드코딩 노출하지 않음.
 
 ---
 
@@ -108,4 +114,5 @@ flowchart TD
 
 | 일자 | 버전 | 변경 내용 | 대상 파일 / 규칙 |
 | :--- | :--- | :--- | :--- |
+| 2026-10-14 | **v3.1.0** | **환경 변수 `.env` 엄격 관리 및 코드 내 디폴트값 전면 금지 헌장 반영**:<br>① **6대 절대 가드레일 확장**: 환경변수 fallback 금지 및 `.env` 중앙화(`src/lib/config/env.ts`) 강제<br>② **관리자 인증 식별자 고도화**: 사용자명(`username`) 및 이메일(`email`) 복합 로그인 지원<br>③ **클라이언트 번들 보안**: 로그인 UI에서 하드코딩된 자격증명/디폴트 비밀번호 노출 원천 차단<br>④ **환경 변수 템플릿 표준화**: `.env.example` 형상 관리 등록 및 `.gitignore` 예외 반영<br>⑤ `GEMINI.md`, `AGENTS.md`, `.agents/rules/*` 전면 동기화 | `GEMINI.md`, `AGENTS.md`, `admin-security.md`, `architecture-mongodb-gcp.md`, `.env.example` |
 | 2026-10-14 | **v3.0.0** | **`docs/작업지시서.md` (v1.2) 반영 워크스페이스 하네스 프롬프트 전면 개편**:<br>① eCare24 이전 프로젝트 유물 완전 제거<br>② 미래스마트산업진흥원 포털 + 관리자 CMS 도메인 규칙 신설 (`smart-industry-domain.md`)<br>③ GCE VM MongoDB 자체 운영 & VPC & GCS 백업 규칙 신설 (`architecture-mongodb-gcp.md`)<br>④ On-Device 의미 검색 및 외부 트래픽 격리 규칙 신설 (`on-device-search.md`)<br>⑤ 직접 입력 인증(Argon2id, 5회 실패 잠금) 및 KWCAG 2.2 규칙 신설 (`admin-security.md`)<br>⑥ 7대 전문 에이전트 풀 및 신규 스킬 3종(`smart-industry-cms`, `on-device-search`, `gcp-mongo-ops`) 배치 | `GEMINI.md`, `AGENTS.md`, `.agents/rules/*`, `.agents/skills/*`, `plugin.json` |

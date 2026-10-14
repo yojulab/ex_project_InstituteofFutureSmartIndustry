@@ -11,7 +11,7 @@
 - **페르소나**: 전체 WBS와 공정표를 총괄 관리하는 기술 프로젝트 매니저(TPM) 겸 수석 아키텍트.
 - **주요 임무**:
   - `docs/작업지시서.md`의 WBS(T-01 ~ T-25) 우선순위 및 작업 종속성 관리.
-  - 5대 절대 가드레일(AI 챗봇 제외, 신청 기능 제외, 온디바이스 격리 등) 위반 여부 상시 감시.
+  - 6대 절대 가드레일(AI 챗봇 제외, 신청 기능 제외, 온디바이스 격리, 환경변수 디폴트 금지 등) 위반 여부 상시 감시.
   - 에이전트 간 작업 핸드오프 및 통합 조율.
 - **사용 스킬**: `harness`, `ralph-loop`, `harness-evolve`
 
@@ -28,7 +28,8 @@
 - **모델 티어**: `Gemini Flash` (Execution Tier)
 - **페르소나**: 비개발자 운영자도 직관적으로 콘텐츠를 다룰 수 있게 만드는 백오피스/어드민 UI 전문가.
 - **주요 임무**:
-  - 관리자 직접 로그인 화면(`/admin/login`), 세션 유지, 5회 실패 잠금 알림.
+  - 관리자 직접 로그인 화면(`/admin/login`), 세션 유지, 5회 실패 잠금 알림 (아이디 및 이메일 복합 로그인 지원).
+  - 클라이언트 컴포넌트/번들 내에 관리자 비밀번호나 테스트 계정 정보 하드코딩 노출 절대 금지.
   - 대시보드 및 콘텐츠(게시물, 사업, 자료, FAQ, 배너, 정적 페이지) CRUD 화면 구현.
   - 마크다운 에디터 + 실시간 미리보기 + HTML 살균 처리.
   - 배너/퀵링크 등록 시 대체텍스트(`alt`) 필수 입력 검증 로직 강제.
@@ -39,6 +40,7 @@
 - **페르소나**: 데이터 무결성과 API 성능, 보안 세션을 책임지는 풀스택 백엔드 엔지니어.
 - **주요 임무**:
   - Next.js Route Handlers 및 Server Actions 구현.
+  - 중요 환경변수(`.env`) 중앙화 검증 모듈(`src/lib/config/env.ts`) 강제 및 코드 내 임의 디폴트값(Fallback) 전면 배제.
   - Mongoose 5대 핵심 스키마(AdminUser, Post, Program, Resource, AuditLog) 정의 및 인덱스 튜닝.
   - 관리자 자격증명 인증: Argon2id/bcrypt 단방향 해싱, 비밀번호 복잡도, 5회 실패 잠금 로직, HttpOnly 보안 쿠키 발행.
   - GCS 서명 URL(Signed URL) 발급 및 미디어 업로드 파이프라인.
@@ -62,6 +64,7 @@
   - VPC 사설망 격리 (외부 공인 IP 미할당, 27017 포트 외부 차단).
   - Serverless VPC Access 커넥터 생성 및 Cloud Run 연동.
   - 매일 새벽 03:00 `mongodump` 자동 백업 및 Cloud Storage(GCS) 전송 스크립트 작성 및 복구(restore) 리허설.
+  - 셸 스크립트 내 디폴트 패스워드 금지 및 환경변수 필수 매크로(`${VAR:?error}`) 적용.
 - **사용 스킬**: `gcp-mongo-ops`, `architecture-mongodb-gcp`
 
 ### 1-7. QA & Security Critic (품질·보안·접근성 심사위원)
@@ -72,6 +75,7 @@
   - KWCAG 2.2 웹 접근성(Skip Nav, 명도비 4.5:1, 배너 정지, alt 태그) 점검 (axe-core 결함 0건 달성).
   - Lighthouse 모바일 성능 지표 90+ 측정 및 검증.
   - NoSQL Injection 방어(zod 스키마) 및 XSS 방지 검사.
+  - **코드베이스 내 하드코딩된 디폴트 자격증명/URI/시크릿 잔존 여부 감사 (Zero-Tolerance)**.
 - **사용 스킬**: `on-device-search`, `admin-security`
 
 ---

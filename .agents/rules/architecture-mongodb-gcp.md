@@ -116,3 +116,6 @@ flowchart TD
 3. **파일 업로드**:
    - 서버를 거치지 않고 Cloud Storage 서명 URL(Signed URL)을 발급받아 브라우저에서 직접 GCS 업로드.
    - 확장자 화이트리스트(`pdf`, `hwp`, `hwpx`, `docx`, `xlsx`, `pptx`, `jpg`, `jpeg`, `png`, `webp`) 및 용량(개당 50MB 이내) 엄격 검증.
+4. **환경 변수 `.env` 엄격 관리 및 디폴트 금지**:
+   - `MONGODB_URI`는 반드시 `.env` 파일 또는 GCP Secret Manager로부터 [`src/lib/config/env.ts`](file:///apps/ex_project_InstituteofFutureSmartIndustry/src/lib/config/env.ts)의 `getDatabaseUri()`를 통해 주입받으며, 코드 내에 로컬 IP나 기본 DB명을 하드코딩한 fallback을 일체 허용하지 않는다.
+   - 인프라 및 백업/복구 스크립트([`infra/gcp/`](file:///apps/ex_project_InstituteofFutureSmartIndustry/infra/gcp/))에서도 디폴트 패스워드 작성을 금지하며, 환경변수 누락 시 즉시 중단되는 `${VAR:?error}` 구문을 강제한다.

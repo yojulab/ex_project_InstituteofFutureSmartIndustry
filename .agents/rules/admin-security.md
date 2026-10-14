@@ -23,11 +23,21 @@
 ### 1-3. 보안 세션 쿠키
 - **쿠키 규격**:
   - 이름: `__Host-admin-session`
-  - 플래그: `HttpOnly: true`, `Secure: true`, `SameSite: 'Strict'`, `Path: '/admin'`
+  - 플래그: `HttpOnly: true`, `Secure: true`, `SameSite: 'Strict'`, `Path: '/'`
   - 유효기간: 최대 2시간, 무활동 30분 지속 시 세션 자동 만료(Sliding Expiration).
 - **역할 기반 접근 제어 (RBAC)**:
   - `admin`: 전체 메뉴 접근 (계정 관리, 감사로그, 환경설정 포함).
   - `editor`: 콘텐츠 관리(게시물, 사업, 자료, FAQ, 배너) 전용. `/admin/users` 및 `/admin/audit-logs` 접근 차단(403 Forbidden).
+
+### 1-4. 환경 변수 엄격 관리 및 디폴트 자격증명 배제 (No-Default Policy)
+- **중앙화 환경변수 검증 강제**:
+  - `SESSION_SECRET`, `INITIAL_ADMIN_*` 등 모든 보안 필수 변수는 [`src/lib/config/env.ts`](file:///apps/ex_project_InstituteofFutureSmartIndustry/src/lib/config/env.ts)를 통해서만 로드.
+  - 코드베이스 내 `process.env.XXX || 'default_secret'` 형태의 대체값(Fallback) 사용을 전면 금지하며, 누락 시 즉시 예외를 발생시켜 비인가 실행을 원천 차단.
+- **클라이언트 번들 자격증명 노출 금지**:
+  - 로그인 페이지([`src/app/admin/login/page.tsx`](file:///apps/ex_project_InstituteofFutureSmartIndustry/src/app/admin/login/page.tsx))를 포함하여 브라우저에 전송되는 클라이언트 컴포넌트에 관리자 비밀번호, 테스트 계정 정보, 자동 완성용 평문을 일체 하드코딩하지 않음.
+- **로그인 다중 식별자 지원**:
+  - 로그인 폼은 사용자명(`username`) 및 기관 공식 이메일(`email`) 입력을 모두 지원.
+  - zod 검증식([`LoginSchema`](file:///apps/ex_project_InstituteofFutureSmartIndustry/src/lib/validators/index.ts))에서 `@` 기호를 정규식으로 허용하고, 백엔드는 복합 쿼리(`$or`)로 조회.
 
 ---
 
