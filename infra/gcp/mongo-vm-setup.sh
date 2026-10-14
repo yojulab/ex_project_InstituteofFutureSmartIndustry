@@ -47,10 +47,10 @@ sleep 3
 
 echo "==> [5/6] 관리자 및 애플리케이션 계정 생성 (SCRAM-SHA-256)..."
 # 환경변수 또는 임의 안전 비밀번호
-DB_ADMIN_USER="${DB_ADMIN_USER:-admin}"
-DB_ADMIN_PASS="${DB_ADMIN_PASS:-$(openssl rand -base64 24)}"
-APP_USER="${APP_USER:-smart_app}"
-APP_PASS="${APP_PASS:-$(openssl rand -base64 24)}"
+DB_ADMIN_USER="${DB_ADMIN_USER:?오류: DB_ADMIN_USER 환경변수가 필요합니다.}"
+DB_ADMIN_PASS="${DB_ADMIN_PASS:?오류: DB_ADMIN_PASS 환경변수가 필요합니다.}"
+APP_USER="${APP_USER:?오류: APP_USER 환경변수가 필요합니다.}"
+APP_PASS="${APP_PASS:?오류: APP_PASS 환경변수가 필요합니다.}"
 
 mongosh admin --eval "
   db.createUser({

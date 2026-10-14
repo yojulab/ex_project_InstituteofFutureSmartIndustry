@@ -11,10 +11,10 @@ TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 ARCHIVE_NAME="smart_industry_backup_${TIMESTAMP}.tar.gz"
 TEMP_DUMP_DIR="/tmp/mongodump_${TIMESTAMP}"
 
-# DB 자격증명
-DB_USER="${DB_BACKUP_USER:-admin}"
-DB_PASS="${DB_BACKUP_PASS:-AdminSecureBackupPass!}"
-DB_NAME="${DB_NAME:-smart_industry}"
+# DB 자격증명 (코드 내 디폴트 금지, 환경변수 필수)
+DB_USER="${DB_BACKUP_USER:?오류: DB_BACKUP_USER 환경변수가 정의되지 않았습니다.}"
+DB_PASS="${DB_BACKUP_PASS:?오류: DB_BACKUP_PASS 환경변수가 정의되지 않았습니다.}"
+DB_NAME="${DB_NAME:?오류: DB_NAME 환경변수가 정의되지 않았습니다.}"
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] [Backup] Starting daily mongodump..."
 mkdir -p "$BACKUP_DIR"

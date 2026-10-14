@@ -1,8 +1,9 @@
 import { chromium, Browser, Page } from 'playwright';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getInitialAdminConfig, getRequiredEnv } from '../lib/config/env';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:30013';
+const BASE_URL = getRequiredEnv('BASE_URL');
 const ARTIFACT_DIR = '/root/.gemini/antigravity-ide/brain/2aaf60cb-beec-466a-8151-7c2297e84886/screenshots';
 const PUBLIC_DIR = path.join(process.cwd(), 'public/screenshots');
 
@@ -229,9 +230,10 @@ async function main() {
     await testPage('18. 관리자 로그인', '/admin/login', '18_admin_login.png');
 
     // 19. 관리자 로그인 수행
-    console.log(`🔐 [인증] 관리자 로그인 수행 (admin / Admin1234!)...`);
-    await page.fill('input[name="username"]', 'admin');
-    await page.fill('input[name="password"]', 'Admin1234!');
+    const adminConfig = getInitialAdminConfig();
+    console.log(`🔐 [인증] 관리자 로그인 수행 (${adminConfig.username})...`);
+    await page.fill('input[name="username"]', adminConfig.username);
+    await page.fill('input[name="password"]', adminConfig.password);
     await page.click('button[type="submit"]');
 
     // 대시보드로 이동 대기

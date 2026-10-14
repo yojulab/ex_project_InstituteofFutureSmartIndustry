@@ -9,8 +9,8 @@ BACKUP_BUCKET="${GCS_BACKUP_BUCKET:-smart-industry-db-backups}"
 DRILL_DIR="/tmp/mongodb_restore_drill"
 TARGET_TEST_DB="smart_industry_restore_test"
 
-DB_USER="${DB_BACKUP_USER:-admin}"
-DB_PASS="${DB_BACKUP_PASS:-AdminSecureBackupPass!}"
+DB_USER="${DB_BACKUP_USER:?오류: DB_BACKUP_USER 환경변수가 정의되지 않았습니다.}"
+DB_PASS="${DB_BACKUP_PASS:?오류: DB_BACKUP_PASS 환경변수가 정의되지 않았습니다.}"
 
 echo "==> [1/4] 복구 리허설 임시 디렉터리 준비..."
 rm -rf "$DRILL_DIR"

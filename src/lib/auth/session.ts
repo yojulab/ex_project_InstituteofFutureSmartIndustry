@@ -1,9 +1,6 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
-
-const SESSION_SECRET = new TextEncoder().encode(
-  process.env.SESSION_SECRET || 'dev-super-secure-institute-smart-industry-secret-key-32chars!'
-);
+import { getSessionSecret } from '@/lib/config/env';
 
 export const SESSION_COOKIE_NAME =
   process.env.NODE_ENV === 'production' ? '__Host-admin-session' : 'admin_session';
@@ -18,16 +15,18 @@ export interface SessionPayload {
 }
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {
+  const secret = getSessionSecret();
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_DURATION_SECONDS}s`)
-    .sign(SESSION_SECRET);
+    .sign(secret);
 }
 
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, SESSION_SECRET);
+    const secret = getSessionSecret();
+    const { payload } = await jwtVerify(token, secret);
     return {
       sub: payload.sub as string,
       username: payload.username as string,

@@ -1,4 +1,5 @@
 import { connectToDatabase } from '../lib/db';
+import { getInitialAdminConfig } from '../lib/config/env';
 import {
   AdminUser,
   Post,
@@ -16,16 +17,18 @@ export async function runSeed() {
   await connectToDatabase();
 
   // 1. 관리자 계정 생성 (기존 계정 없을 경우)
-  const existingAdmin = await AdminUser.findOne({ username: 'admin' });
+  const adminConfig = getInitialAdminConfig();
+  const existingAdmin = await AdminUser.findOne({
+    $or: [{ username: adminConfig.username }, { email: adminConfig.email }],
+  });
   let adminUserId;
 
   if (!existingAdmin) {
-    const defaultPassword = process.env.INITIAL_ADMIN_PASSWORD || 'Admin1234!';
-    const passwordHash = await hashPassword(defaultPassword);
+    const passwordHash = await hashPassword(adminConfig.password);
 
     const admin = await AdminUser.create({
-      username: 'admin',
-      email: 'admin@smartindustry.or.kr',
+      username: adminConfig.username,
+      email: adminConfig.email,
       passwordHash,
       name: '진흥원 시스템관리자',
       role: 'admin',
@@ -34,7 +37,7 @@ export async function runSeed() {
       passwordChangedAt: new Date(),
     });
     adminUserId = admin._id;
-    console.log(`[Seed] Initial Admin account created: admin / ${defaultPassword}`);
+    console.log(`[Seed] Initial Admin account created: ${adminConfig.username} (${adminConfig.email})`);
   } else {
     adminUserId = existingAdmin._id;
     console.log('[Seed] Admin account already exists. Skipping admin creation.');

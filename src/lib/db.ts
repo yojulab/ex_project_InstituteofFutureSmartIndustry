@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { getDatabaseUri } from '@/lib/config/env';
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -27,11 +28,7 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
 
   if (!cached.promise) {
     cached.promise = (async () => {
-      let uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/smart_industry';
-
-      if (!uri) {
-        throw new Error('Database URI could not be determined.');
-      }
+      const uri = getDatabaseUri();
 
       const opts: mongoose.ConnectOptions = {
         bufferCommands: false,

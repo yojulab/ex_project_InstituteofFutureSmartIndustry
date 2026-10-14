@@ -86,15 +86,8 @@ export async function authenticateAdmin(
     user.lockUntil = undefined;
   }
 
-  // 비밀번호 검증
-  let isMatch = await verifyPassword(plainPassword, user.passwordHash);
-
-  // 기본 초기 비밀번호 대소문자 입력 편의 지원 (Admin1234! / admin1234!)
-  if (!isMatch && (plainPassword === 'admin1234!' || plainPassword === 'Admin1234!')) {
-    if (await verifyPassword('Admin1234!', user.passwordHash)) {
-      isMatch = true;
-    }
-  }
+  // 비밀번호 검증 (DB에 저장된 해시와만 엄격 비교)
+  const isMatch = await verifyPassword(plainPassword, user.passwordHash);
 
   if (!isMatch) {
     user.failedAttempts = (user.failedAttempts || 0) + 1;

@@ -5,7 +5,7 @@
 # ==============================================================================
 set -euo pipefail
 
-PROJECT_ID="${GCP_PROJECT_ID:-smart-industry-portal}"
+PROJECT_ID="${GCP_PROJECT_ID:?오류: GCP_PROJECT_ID 환경변수가 필요합니다.}"
 REGION="asia-northeast3"
 VPC_NAME="smart-industry-vpc"
 SUBNET_APP="subnet-asia-northeast3-app"
