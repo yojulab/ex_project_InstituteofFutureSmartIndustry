@@ -4,8 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:30013": "next dev -p 30013",
+    "dev:debug": "NODE_OPTIONS='--inspect=0.0.0.0:30014' next dev -p 30013",
     "build": "next build",
     "start": "next start",
+    "start:30013": "next start -p 30013",
     "lint": "eslint",
     "seed": "tsx src/scripts/seed.ts",
     "build:search": "tsx src/scripts/build-search-index.ts"
