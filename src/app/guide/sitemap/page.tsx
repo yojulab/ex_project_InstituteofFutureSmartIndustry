@@ -35,9 +35,10 @@ export default function SitemapPage() {
     {
       title: '자료실',
       links: [
-        { label: '간행물·보고서', href: '/resources?kind=publication' },
-        { label: '통계·동향', href: '/resources?kind=statistics' },
-        { label: '법령·규정', href: '/resources?kind=regulation' },
+        { label: '전체 자료', href: '/resources' },
+        { label: '간행물·보고서', href: '/resources/publications' },
+        { label: '통계·동향', href: '/resources/statistics' },
+        { label: '법령·규정', href: '/resources/regulations' },
       ],
     },
     {

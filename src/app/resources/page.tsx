@@ -48,11 +48,24 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
   const totalPages = Math.ceil(totalCount / pageSize) || 1;
 
   const kinds = [
-    { key: 'all', label: '전체 자료' },
-    { key: 'publication', label: '간행물·보고서' },
-    { key: 'statistics', label: '통계·동향' },
-    { key: 'regulation', label: '법령·규정' },
+    { key: 'all', href: '/resources', label: '전체 자료' },
+    { key: 'publication', href: '/resources/publications', label: '간행물·보고서' },
+    { key: 'statistics', href: '/resources/statistics', label: '통계·동향' },
+    { key: 'regulation', href: '/resources/regulations', label: '법령·규정' },
   ];
+
+  const getResourceSlug = (k: string) => {
+    switch (k) {
+      case 'publication':
+        return 'publications';
+      case 'statistics':
+        return 'statistics';
+      case 'regulation':
+        return 'regulations';
+      default:
+        return 'publications';
+    }
+  };
 
   const formatFileSize = (bytes?: number) => {
     if (!bytes) return '';
@@ -103,10 +116,7 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
               return (
                 <Link
                   key={item.key}
-                  href={`/resources?${new URLSearchParams({
-                    ...(item.key !== 'all' ? { kind: item.key } : {}),
-                    ...(q ? { q } : {}),
-                  }).toString()}`}
+                  href={`${item.href}${q ? `?q=${encodeURIComponent(q)}` : ''}`}
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${
                     isSelected
                       ? 'bg-[#0F2C59] text-white shadow-sm'
@@ -163,9 +173,11 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
                     </time>
                   </div>
 
-                  <h2 className="text-base font-bold text-slate-900 group-hover:text-[#0284C7] transition-colors line-clamp-2 mb-2">
-                    {item.title}
-                  </h2>
+                  <Link href={`/resources/${getResourceSlug(item.kind)}/${item._id.toString()}`} className="group-hover:text-[#0284C7] transition-colors">
+                    <h2 className="text-base font-bold text-slate-900 group-hover:text-[#0284C7] transition-colors line-clamp-2 mb-2">
+                      {item.title}
+                    </h2>
+                  </Link>
 
                   <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 mb-6 flex-1">
                     {item.summary}

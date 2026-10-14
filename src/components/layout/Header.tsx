@@ -60,7 +60,7 @@ const MENU_ITEMS: MenuItem[] = [
   },
   {
     title: '자료실',
-    href: '/resources/publications',
+    href: '/resources',
     subItems: [
       { title: '간행물·보고서', href: '/resources/publications', description: '산업 동향 분석 및 연구 보고서' },
       { title: '통계·동향', href: '/resources/statistics', description: '스마트제조 실태조사 및 통계' },
