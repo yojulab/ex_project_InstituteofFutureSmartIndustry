@@ -1,0 +1,24 @@
+{
+  "name": "harness",
+  "version": "3.0.0-gemini",
+  "description": "Harness Engineering & Multi-Agent Architecture for Future Smart Industry Institute Portal (Next.js App Router, GCE MongoDB Self-Hosted, On-Device Search, Admin CMS, GCP Cloud Run)",
+  "author": "Antigravity & Gemini Team",
+  "entrypoint": "skills/harness/SKILL.md",
+  "skills": [
+    "harness",
+    "harness-evolve",
+    "ralph-loop",
+    "smart-industry-cms",
+    "on-device-search",
+    "gcp-mongo-ops"
+  ],
+  "rules": [
+    "rules/harness-engineering.md",
+    "rules/loop-engineering.md",
+    "rules/smart-industry-domain.md",
+    "rules/architecture-mongodb-gcp.md",
+    "rules/on-device-search.md",
+    "rules/admin-security.md",
+    "rules/git-workflow.md"
+  ]
+}
