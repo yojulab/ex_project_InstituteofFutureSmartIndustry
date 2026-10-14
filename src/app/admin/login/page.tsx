@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShieldCheck, Lock, User, AlertCircle, ArrowLeft, Building2 } from 'lucide-react';
+import { ShieldCheck, Lock, User, AlertCircle, ArrowLeft, Building2, Eye, EyeOff, Info } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -44,6 +45,11 @@ export default function AdminLoginPage() {
       setErrorMsg('서버와 통신할 수 없습니다. 잠시 후 다시 시도해 주세요.');
       setLoading(false);
     }
+  };
+
+  const handleFillDemo = () => {
+    setUsername('admin');
+    setPassword('Admin1234!');
   };
 
   return (
@@ -86,7 +92,7 @@ export default function AdminLoginPage() {
                 htmlFor="username"
                 className="block text-xs font-semibold text-slate-300 mb-1.5"
               >
-                관리자 아이디
+                관리자 아이디 또는 이메일
               </label>
               <div className="relative">
                 <input
@@ -97,7 +103,7 @@ export default function AdminLoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="아이디를 입력하세요"
+                  placeholder="admin 또는 admin@smartindustry.or.kr"
                   className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm placeholder:text-slate-500 focus:outline-hidden focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 />
                 <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -115,16 +121,47 @@ export default function AdminLoginPage() {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="비밀번호를 입력하세요"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm placeholder:text-slate-500 focus:outline-hidden focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                  className="w-full pl-10 pr-11 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm placeholder:text-slate-500 focus:outline-hidden focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 />
                 <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                  aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+            </div>
+
+            {/* 초기 기본 계정 안내 배너 & 자동입력 */}
+            <div className="p-3 rounded-xl bg-sky-950/50 border border-sky-800/60 text-xs text-sky-200 flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                <div className="text-[11px] leading-relaxed">
+                  <span className="font-bold text-sky-300">초기 계정:</span>{' '}
+                  <code className="px-1.5 py-0.5 rounded bg-sky-900 text-sky-100 font-mono">admin</code>{' '}
+                  / PW:{' '}
+                  <code className="px-1.5 py-0.5 rounded bg-sky-900 text-sky-100 font-mono">Admin1234!</code>
+                  <div className="text-[10px] text-sky-400/90 mt-0.5">
+                    (비밀번호 첫 글자 대문자 ‘A’ 포함)
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleFillDemo}
+                className="shrink-0 px-2.5 py-1 text-[11px] font-semibold bg-sky-600 hover:bg-sky-500 text-white rounded-lg transition-colors shadow-xs"
+              >
+                자동 입력
+              </button>
             </div>
 
             <div className="pt-2">
