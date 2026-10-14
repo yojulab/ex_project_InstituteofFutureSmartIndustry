@@ -62,7 +62,7 @@ export default async function PostDetailPage({ params }: PostDetailProps) {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm text-slate-500">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4 text-slate-400" />
-                등록일: <time dateTime={post.publishedAt}>{new Date(post.publishedAt).toISOString().slice(0, 10)}</time>
+                등록일: <time dateTime={new Date(post.publishedAt).toISOString().slice(0, 10)}>{new Date(post.publishedAt).toISOString().slice(0, 10)}</time>
               </span>
 
               {post.department && (

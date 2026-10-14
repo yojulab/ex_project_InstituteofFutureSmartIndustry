@@ -158,7 +158,7 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
                     <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">
                       {getKindLabel(item.kind)}
                     </span>
-                    <time className="text-xs text-slate-400" dateTime={item.publishedAt}>
+                    <time className="text-xs text-slate-400" dateTime={new Date(item.publishedAt).toISOString().slice(0, 10)}>
                       {new Date(item.publishedAt).toISOString().slice(0, 10)}
                     </time>
                   </div>

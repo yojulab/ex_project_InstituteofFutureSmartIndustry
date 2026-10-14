@@ -183,7 +183,7 @@ export default async function NewsListPage({ params, searchParams }: NewsListPag
                       </td>
 
                       <td className="py-4 px-4 text-center text-slate-500">
-                        <time dateTime={post.publishedAt}>
+                        <time dateTime={new Date(post.publishedAt).toISOString().slice(0, 10)}>
                           {new Date(post.publishedAt).toISOString().slice(0, 10)}
                         </time>
                       </td>
