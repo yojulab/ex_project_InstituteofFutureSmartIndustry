@@ -31,9 +31,13 @@ export async function POST(req: NextRequest) {
       operatorIp: ip,
     });
 
+    const message = result.dbCreated
+      ? `데이터베이스 '${result.dbName}'를 신규 생성하고 목업 데이터를 초기화했습니다.`
+      : `데이터베이스 '${result.dbName}' 목업 데이터가 성공적으로 초기화되었습니다.`;
+
     return NextResponse.json({
       success: true,
-      message: '시스템 목업 데이터가 성공적으로 초기화되었습니다.',
+      message,
       result,
     });
   } catch (error: any) {

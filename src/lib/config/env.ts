@@ -41,6 +41,26 @@ export function getDatabaseUri(): string {
 }
 
 /**
+ * 데이터베이스 명칭 추출 함수
+ */
+export function getDatabaseName(): string {
+  const uri = getDatabaseUri();
+  try {
+    const url = new URL(uri);
+    const dbName = url.pathname.replace(/^\//, '').split('?')[0];
+    if (dbName && dbName.trim()) {
+      return dbName.trim();
+    }
+  } catch {
+    const match = uri.match(/\/([^/?]+)(\?|$)/);
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+  }
+  return 'smart_industry';
+}
+
+/**
  * 세션 JWT 서명 시크릿 (최소 32자 이상 필수, 디폴트 금지)
  */
 export function getSessionSecret(): Uint8Array {
