@@ -62,6 +62,14 @@ cmd_start() {
 
   echo -e "🚀 [:${PORT}] 미래스마트산업진흥원 포털 기동 중 (${mode} 모드)..."
 
+  # MongoDB 상태 점검 및 미가동 시 자동 실행
+  if ! is_port_in_use 27017; then
+    echo -e "   ${YELLOW}⚡ MongoDB (Port 27017) 미가동 감지. 데몬 자동 기동 중...${NC}"
+    mkdir -p /root/data/db
+    mongod --dbpath /root/data/db --fork --logpath /root/data/mongod.log --bind_ip 127.0.0.1 >/dev/null 2>&1 || true
+    sleep 1
+  fi
+
   if [ "$mode" = "debug" ]; then
     nohup env NODE_OPTIONS="--inspect=0.0.0.0:${INSPECT_PORT}" npm run dev:30013 > "$LOG_FILE" 2>&1 &
   elif [ "$mode" = "dev" ]; then
