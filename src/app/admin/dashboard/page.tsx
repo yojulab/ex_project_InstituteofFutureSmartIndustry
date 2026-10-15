@@ -22,7 +22,9 @@ import {
   Server,
   PlusCircle,
   ExternalLink,
+  Database,
 } from 'lucide-react';
+import DataResetButton from '@/components/admin/DataResetButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,7 +69,8 @@ export default async function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {session.role === 'admin' && <DataResetButton />}
           <Link
             href="/admin/posts/new"
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs transition-all shadow-md"
@@ -233,6 +236,19 @@ export default async function AdminDashboardPage() {
                 ● 외부 LLM 유출 0건 보장
               </span>
             </div>
+
+            {session.role === 'admin' && (
+              <div className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 block text-[11px]">목업 데이터 관리</span>
+                  <Database className="w-3.5 h-3.5 text-rose-400" />
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  게시물, 사업안내, 배너 등을 기본 목업 데이터로 리셋합니다.
+                </p>
+                <DataResetButton className="w-full justify-center" />
+              </div>
+            )}
           </div>
         </div>
       </div>

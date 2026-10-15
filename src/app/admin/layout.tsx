@@ -19,6 +19,7 @@ import {
   Settings,
 } from 'lucide-react';
 import AdminLogoutButton from '@/components/admin/AdminLogoutButton';
+import DataResetButton from '@/components/admin/DataResetButton';
 
 export default async function AdminLayout({
   children,
@@ -143,6 +144,12 @@ export default async function AdminLayout({
             <History className="w-4 h-4 text-amber-400" />
             <span>보안 감사로그</span>
           </Link>
+
+          {session.role === 'admin' && (
+            <div className="pt-2 px-1">
+              <DataResetButton className="w-full justify-start text-[11px] py-2" />
+            </div>
+          )}
         </nav>
 
         {/* 사이드바 하단 (포털 바로가기 및 로그아웃) */}
