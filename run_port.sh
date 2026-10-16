@@ -135,8 +135,8 @@ cmd_start() {
   local db_host="127.0.0.1"
   local db_port="27017"
   if [ -n "$db_uri" ]; then
-    local ext_host=$(echo "$db_uri" | sed -E 's|^mongodb://([^:/@]+@)?([^:/@]+)(:([0-9]+))?.*|\2|')
-    local ext_port=$(echo "$db_uri" | sed -E 's|^mongodb://([^:/@]+@)?([^:/@]+)(:([0-9]+))?.*|\4|')
+    local ext_host=$(echo "$db_uri" | sed -E 's|^mongodb://([^/@]+@)?([^:/@]+)(:([0-9]+))?.*|\2|')
+    local ext_port=$(echo "$db_uri" | sed -E 's|^mongodb://([^/@]+@)?([^:/@]+)(:([0-9]+))?.*|\4|')
     [ -n "$ext_host" ] && db_host="$ext_host"
     [ -n "$ext_port" ] && db_port="$ext_port"
   fi
