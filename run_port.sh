@@ -20,7 +20,21 @@
 #   ./run_port.sh status [PORT]         (지정 포트 서비스 상태 확인)
 # ==============================================================================
 
-set -uo pipefail
+# source(.)로 호출되었을 때 터미널 강제 종료 및 환경 오염 방지
+(return 0 2>/dev/null) && _RUN_PORT_SOURCED=1 || _RUN_PORT_SOURCED=0
+
+safe_exit() {
+  local code=${1:-0}
+  if [ "$_RUN_PORT_SOURCED" -eq 1 ]; then
+    return "$code" 2>/dev/null || true
+  else
+    exit "$code"
+  fi
+}
+
+if [ "$_RUN_PORT_SOURCED" -eq 0 ]; then
+  set -uo pipefail
+fi
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_PORT=30013
@@ -210,7 +224,7 @@ case "$ACTION" in
   dev:debug|debug)
     cmd_start "debug" "$PORT"
     ;;
-  start|prod)
+  start|prod|all)
     if [ "$TARGET_MODE" = "dev" ] || [ "$TARGET_MODE" = "debug" ]; then
       cmd_start "$TARGET_MODE" "$PORT"
     else
@@ -237,6 +251,8 @@ case "$ACTION" in
   *)
     echo "사용법: ./run_port.sh [start|prod|dev|debug|stop|restart|status] [PORT]"
     echo "       또는 ./run_port.sh [PORT] (임의 포트로 운영 기동)"
-    exit 1
+    safe_exit 1
     ;;
 esac
+
+safe_exit 0

@@ -21,8 +21,6 @@
 #   ./compile.sh start [PORT]  -> 전체 컴파일 후 운영 모드로 서버 즉시 기동
 # ==============================================================================
 
-set -uo pipefail
-
 # source(.)로 호출되었는지 검사하여 터미널 강제 종료 방지
 (return 0 2>/dev/null) && _COMPILE_SOURCED=1 || _COMPILE_SOURCED=0
 
@@ -34,6 +32,10 @@ safe_exit() {
     exit "$code"
   fi
 }
+
+if [ "$_COMPILE_SOURCED" -eq 0 ]; then
+  set -uo pipefail
+fi
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_PORT="${PORT:-30013}"
