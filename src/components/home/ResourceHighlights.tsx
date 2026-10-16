@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { BookOpen, Download, FileText, ArrowRight } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 export interface ResourceItem {
   id: string;
@@ -42,7 +43,8 @@ export const ResourceHighlights: React.FC<ResourceHighlightsProps> = ({ resource
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-8 py-16" aria-labelledby="resources-heading">
+    <section className="relative max-w-7xl mx-auto px-4 sm:px-8 py-16" aria-labelledby="resources-heading">
+      <UiBadge id="P01-SEC06-RES00" name="자료실 최신 발간물 섹션" />
       <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
@@ -59,19 +61,21 @@ export const ResourceHighlights: React.FC<ResourceHighlightsProps> = ({ resource
 
         <Link
           href="/resources"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold transition-colors group shrink-0"
+          className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold transition-colors group shrink-0"
         >
+          <UiBadge id="P01-SEC06-BTN01" name="자료실 전체보기 링크" />
           <span>자료실 전체보기</span>
           <ArrowRight className="w-4 h-4 text-slate-500 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {resources.map((item) => (
+        {resources.map((item, idx) => (
           <div
             key={item.id}
-            className="flex flex-col bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-sky-300 hover:shadow-lg transition-all group"
+            className="relative flex flex-col bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-sky-300 hover:shadow-lg transition-all group"
           >
+            <UiBadge id={`P01-SEC06-CRD0${idx + 1}`} name={`발간물 카드: ${item.title}`} />
             <div className="flex items-center justify-between gap-2 mb-3">
               <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-700">
                 {getKindLabel(item.kind)}

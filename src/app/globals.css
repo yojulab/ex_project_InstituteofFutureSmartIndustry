@@ -105,3 +105,69 @@ textarea:focus-visible {
 .prose-content strong {
   color: #0F172A;
 }
+
+/* ==========================================================================
+   UI inspect 시스템 스타일 (docs/UI-inspects.md 규격)
+   - 폰트 9.5px, 패딩 2.5px 5.5px, 모서리 4px (1단계 축소 콤팩트 규격)
+   - 관리자 좌측 메뉴 뱃지 위치 일치 (좌상단 핀 고정)
+   ========================================================================== */
+.ui-serial-badge {
+  display: none;
+  position: absolute;
+  top: -8px;
+  left: -2px;
+  z-index: 99999;
+  background: linear-gradient(135deg, #3182F6 0%, #6366F1 100%);
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2.5px 5.5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(49, 130, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  letter-spacing: -0.2px;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.ui-serial-badge:hover {
+  transform: scale(1.12);
+  background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%);
+}
+
+.ui-serial-badge.copied {
+  background: #10B981 !important;
+  transform: scale(1.08);
+}
+
+body.ui-inspect-active .ui-serial-badge {
+  display: inline-flex !important;
+  animation: uiTagPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes uiTagPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 관리자 좌측 메뉴 뱃지 위치 일치화 (좌상단 핀 고정) */
+.sidebar-item .ui-serial-badge {
+  top: -6px !important;
+  left: 8px !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+.sidebar-item .ui-serial-badge:hover {
+  transform: scale(1.12) !important;
+}
+

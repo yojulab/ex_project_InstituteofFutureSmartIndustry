@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Sparkles, ArrowRight } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 interface HeroSearchProps {
   visionStatement?: string;
@@ -53,10 +54,11 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
         {/* 중앙 통합 검색바 */}
         <form
           onSubmit={handleSearch}
-          className="pt-4 max-w-2xl mx-auto"
+          className="relative pt-4 max-w-2xl mx-auto"
           role="search"
           aria-label="누리집 통합검색"
         >
+          <UiBadge id="P01-SEC02-SCH01" name="히어로 통합 검색 입력창" />
           <div className="relative flex items-center shadow-2xl rounded-2xl bg-white p-1.5 focus-within:ring-4 focus-within:ring-sky-400/50 transition-all">
             <label htmlFor="hero-search-input" className="sr-only">
               검색어를 입력하세요
@@ -76,8 +78,9 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
 
             <button
               type="submit"
-              className="px-6 py-3.5 bg-gradient-to-r from-[#0F2C59] to-[#0284C7] hover:from-[#163B75] hover:to-[#0369A1] text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0"
+              className="relative px-6 py-3.5 bg-gradient-to-r from-[#0F2C59] to-[#0284C7] hover:from-[#163B75] hover:to-[#0369A1] text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0"
             >
+              <UiBadge id="P01-SEC02-BTN01" name="히어로 통합 검색 버튼" />
               <span>검색</span>
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -86,7 +89,8 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
 
         {/* 추천/인기 검색어 태그 */}
         {popularKeywords.length > 0 && (
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-slate-300">
+          <div className="relative pt-2 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-slate-300">
+            <UiBadge id="P01-SEC02-TAG01" name="추천/인기 검색어 태그 그룹" />
             <span className="font-semibold text-sky-300">추천 검색어:</span>
             {popularKeywords.map((kw) => (
               <button

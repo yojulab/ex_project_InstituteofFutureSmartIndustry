@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Building, Phone, Mail, Printer, Shield, ArrowUpRight } from 'lucide-react';
+import { Building, Phone, Mail, Printer, Shield } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 const FAMILY_SITES = [
   { name: '과학기술정보통신부', url: 'https://www.msit.go.kr' },
@@ -26,7 +27,8 @@ export const Footer: React.FC = () => {
       {/* 1. 정책 바로가기 링크 */}
       <div className="border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
-          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm font-medium" aria-label="하단 정책 메뉴">
+          <nav className="relative flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm font-medium" aria-label="하단 정책 메뉴">
+            <UiBadge id="P00-FTR-NAV01" name="하단 정책 메뉴 네비게이션" />
             <Link
               href="/privacy"
               className="text-white font-bold hover:text-sky-400 transition-colors underline underline-offset-4"
@@ -48,7 +50,8 @@ export const Footer: React.FC = () => {
           </nav>
 
           {/* 패밀리 사이트 셀렉트 */}
-          <div className="flex items-center gap-2">
+          <div className="relative flex items-center gap-2">
+            <UiBadge id="P00-FTR-SEL01" name="관련기관 및 패밀리사이트 바로가기 셀렉터" />
             <label htmlFor="family-site-select" className="sr-only">
               관련기관 및 패밀리사이트 바로가기
             </label>
@@ -75,7 +78,8 @@ export const Footer: React.FC = () => {
 
       {/* 2. 기관 상세 정보 및 카피라이트 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <UiBadge id="P00-FTR-INFO01" name="진흥원 기관 정보 및 연락망" />
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-2 text-white font-extrabold text-base">
               <Building className="w-5 h-5 text-sky-400" />

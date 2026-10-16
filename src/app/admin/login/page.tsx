@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, Lock, User, AlertCircle, ArrowLeft, Building2, Eye, EyeOff } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -90,6 +91,7 @@ export default function AdminLoginPage() {
                 관리자 아이디 또는 이메일
               </label>
               <div className="relative">
+                <UiBadge id="A01-SEC01-INP01" name="관리자 아이디 또는 이메일 입력창" />
                 <input
                   id="username"
                   name="username"
@@ -113,6 +115,7 @@ export default function AdminLoginPage() {
                 비밀번호
               </label>
               <div className="relative">
+                <UiBadge id="A01-SEC01-INP02" name="관리자 비밀번호 입력창" />
                 <input
                   id="password"
                   name="password"
@@ -125,18 +128,22 @@ export default function AdminLoginPage() {
                   className="w-full pl-10 pr-11 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-white text-sm placeholder:text-slate-500 focus:outline-hidden focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 />
                 <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
-                  aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+                <div className="relative">
+                  <UiBadge id="A01-SEC01-BTN01" name="비밀번호 보기/숨기기 토글 버튼" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors p-1"
+                    aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="relative pt-2">
+              <UiBadge id="A01-SEC01-BTN02" name="관리자 시스템 로그인 버튼" />
               <button
                 type="submit"
                 disabled={loading}
@@ -147,7 +154,8 @@ export default function AdminLoginPage() {
             </div>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-slate-700/60 text-center">
+          <div className="relative mt-6 pt-5 border-t border-slate-700/60 text-center">
+            <UiBadge id="A01-SEC01-LNK01" name="공개 포털 메인으로 이동 링크" />
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"

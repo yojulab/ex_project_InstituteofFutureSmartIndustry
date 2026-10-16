@@ -94,6 +94,7 @@ flowchart TD
 - [admin-security.md](file:///apps/ex_project_InstituteofFutureSmartIndustry/.agents/rules/admin-security.md): 직접 자격증명 인증, 5회 실패 잠금, 세션 쿠키, 감사로그, KWCAG 2.2 웹 접근성
 - [git-workflow.md](file:///apps/ex_project_InstituteofFutureSmartIndustry/.agents/rules/git-workflow.md): 업무 단위별 원자적 Git Commit 규약 및 태그 컨벤션
 - [harness-engineering.md](file:///apps/ex_project_InstituteofFutureSmartIndustry/.agents/rules/harness-engineering.md): 하네스 엔지니어링 헌장 및 5대 품질 패턴
+- [ui-tagging-inspection.md](file:///apps/ex_project_InstituteofFutureSmartIndustry/.agents/rules/ui-tagging-inspection.md): UI inspect 일련번호 태깅 및 원클릭 인스펙션 규격 (Alt+I 단축키, 4대 정보 복사)
 
 ---
 

@@ -25,6 +25,7 @@ import {
   Database,
 } from 'lucide-react';
 import DataResetButton from '@/components/admin/DataResetButton';
+import UiBadge from '@/components/common/UiBadge';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,16 +74,18 @@ export default async function AdminDashboardPage() {
           {session.role === 'admin' && <DataResetButton />}
           <Link
             href="/admin/posts/new"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs transition-all shadow-md"
+            className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs transition-all shadow-md"
           >
+            <UiBadge id="A02-SEC02-BTN01" name="새 게시물 작성 퀵 버튼" />
             <PlusCircle className="w-4 h-4" />
             <span>새 게시물 작성</span>
           </Link>
           <Link
             href="/"
             target="_blank"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition-colors"
+            className="relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition-colors"
           >
+            <UiBadge id="A02-SEC02-BTN02" name="포털 확인 버튼" />
             <ExternalLink className="w-4 h-4" />
             <span>포털 확인</span>
           </Link>
@@ -93,8 +96,9 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <Link
           href="/admin/posts"
-          className="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-emerald-500/50 transition-all hover:-translate-y-1 group"
+          className="relative p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-emerald-500/50 transition-all hover:-translate-y-1 group"
         >
+          <UiBadge id="A02-SEC01-STA01" name="알림마당 게시물 수 통계 카드" />
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400 font-semibold">알림마당 게시물</span>
             <FileText className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
@@ -105,8 +109,9 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/programs"
-          className="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-amber-500/50 transition-all hover:-translate-y-1 group"
+          className="relative p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-amber-500/50 transition-all hover:-translate-y-1 group"
         >
+          <UiBadge id="A02-SEC01-STA02" name="주요 지원사업 수 통계 카드" />
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400 font-semibold">주요 지원사업</span>
             <Briefcase className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
@@ -117,8 +122,9 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/resources"
-          className="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-indigo-500/50 transition-all hover:-translate-y-1 group"
+          className="relative p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-indigo-500/50 transition-all hover:-translate-y-1 group"
         >
+          <UiBadge id="A02-SEC01-STA03" name="자료실 발간물 수 통계 카드" />
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400 font-semibold">자료실 발간물</span>
             <BookOpen className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
@@ -129,8 +135,9 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/faqs"
-          className="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-rose-500/50 transition-all hover:-translate-y-1 group"
+          className="relative p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-rose-500/50 transition-all hover:-translate-y-1 group"
         >
+          <UiBadge id="A02-SEC01-STA04" name="자주 묻는 질문 수 통계 카드" />
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400 font-semibold">자주 묻는 질문</span>
             <HelpCircle className="w-5 h-5 text-rose-400 group-hover:scale-110 transition-transform" />
@@ -141,8 +148,9 @@ export default async function AdminDashboardPage() {
 
         <Link
           href="/admin/banners"
-          className="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-purple-500/50 transition-all hover:-translate-y-1 group"
+          className="relative p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:border-purple-500/50 transition-all hover:-translate-y-1 group"
         >
+          <UiBadge id="A02-SEC01-STA05" name="활성 공지 배너 수 통계 카드" />
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs text-slate-400 font-semibold">활성 공지 배너</span>
             <Image className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
@@ -155,7 +163,8 @@ export default async function AdminDashboardPage() {
       {/* 하단 2단 그리드: 최근 보안 감사로그 및 인프라 상태 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 최근 감사로그 */}
-        <div className="lg:col-span-2 bg-slate-800/60 border border-slate-700/60 rounded-3xl p-6 shadow-sm">
+        <div className="relative lg:col-span-2 bg-slate-800/60 border border-slate-700/60 rounded-3xl p-6 shadow-sm">
+          <UiBadge id="A02-SEC03-AUD01" name="최근 보안 감사로그 목록 패널" />
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-700/60">
             <div className="flex items-center gap-2">
               <History className="w-5 h-5 text-amber-400" />

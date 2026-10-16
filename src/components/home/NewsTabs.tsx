@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Bell, ArrowRight, Pin, ChevronRight } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 export interface PostItem {
   id: string;
@@ -50,7 +51,8 @@ export const NewsTabs: React.FC<NewsTabsProps> = ({ posts }) => {
   };
 
   return (
-    <section className="bg-slate-50 py-16 border-y border-slate-200/80" aria-labelledby="news-tabs-heading">
+    <section className="relative bg-slate-50 py-16 border-y border-slate-200/80" aria-labelledby="news-tabs-heading">
+      <UiBadge id="P01-SEC05-NWS00" name="알림마당 새소식 섹션" />
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 gap-4">
           <div>
@@ -68,8 +70,9 @@ export const NewsTabs: React.FC<NewsTabsProps> = ({ posts }) => {
 
           <Link
             href="/news/notice"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-sky-300 text-slate-800 text-sm font-bold transition-colors group shadow-xs shrink-0"
+            className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-sky-300 text-slate-800 text-sm font-bold transition-colors group shadow-xs shrink-0"
           >
+            <UiBadge id="P01-SEC05-BTN01" name="소식 더보기 링크" />
             <span>소식 더보기</span>
             <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
           </Link>
@@ -77,28 +80,31 @@ export const NewsTabs: React.FC<NewsTabsProps> = ({ posts }) => {
 
         {/* 탭 버튼 네비게이션 */}
         <div className="flex flex-wrap items-center gap-2 mb-6 border-b border-slate-200 pb-2">
-          {TABS.map((tab) => {
+          {TABS.map((tab, idx) => {
             const isActive = activeTab === tab.key;
             return (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
-                  isActive
-                    ? 'bg-[#0F2C59] text-white shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
-                }`}
-                aria-pressed={isActive}
-              >
-                {tab.label}
-              </button>
+              <div key={tab.key} className="relative">
+                <UiBadge id={`P01-SEC05-TAB0${idx + 1}`} name={`소식 탭: ${tab.label}`} />
+                <button
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                    isActive
+                      ? 'bg-[#0F2C59] text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                  }`}
+                  aria-pressed={isActive}
+                >
+                  {tab.label}
+                </button>
+              </div>
             );
           })}
         </div>
 
         {/* 게시글 목록 */}
-        <div className="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 shadow-xs overflow-hidden">
+        <div className="relative bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 shadow-xs overflow-hidden">
+          <UiBadge id="P01-SEC05-LST00" name="새소식 게시글 목록 컨테이너" />
           {filteredPosts.length === 0 ? (
             <div className="py-12 text-center text-slate-500 text-sm">
               등록된 게시물이 없습니다.

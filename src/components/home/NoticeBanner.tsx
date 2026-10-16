@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Play, Pause, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
 export interface BannerItem {
   id: string;
@@ -68,7 +69,8 @@ export const NoticeBanner: React.FC<NoticeBannerProps> = ({ banners }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           {/* 배너 콘텐츠 링크 */}
-          <div className="flex-1 flex items-center gap-4 min-w-0">
+          <div className="relative flex-1 flex items-center gap-4 min-w-0">
+            <UiBadge id="P01-SEC01-BNR01" name="상단 롤링 공지 배너" />
             <span className="shrink-0 px-2.5 py-1 rounded-md bg-sky-500 text-white font-bold text-xs">
               공지 배너 {currentIndex + 1}/{banners.length}
             </span>
@@ -87,7 +89,8 @@ export const NoticeBanner: React.FC<NoticeBannerProps> = ({ banners }) => {
           {/* 배너 제어 컨트롤 (재생/정지, 이전/다음, 오늘 하루 닫기) */}
           <div className="flex items-center gap-3 shrink-0 text-xs text-slate-300">
             {/* 이전/다음 슬라이드 */}
-            <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
+            <div className="relative flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
+              <UiBadge id="P01-SEC01-BTN01" name="공지 배너 롤링 컨트롤" />
               <button
                 type="button"
                 onClick={handlePrev}

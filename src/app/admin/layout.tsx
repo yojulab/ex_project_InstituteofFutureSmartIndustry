@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import AdminLogoutButton from '@/components/admin/AdminLogoutButton';
 import DataResetButton from '@/components/admin/DataResetButton';
+import UiBadge from '@/components/common/UiBadge';
 
 export default async function AdminLayout({
   children,
@@ -42,7 +43,8 @@ export default async function AdminLayout({
       {/* 관리자 좌측 사이드바 */}
       <aside className="w-full md:w-64 bg-slate-950 border-r border-slate-800 flex flex-col shrink-0">
         {/* 관리자 헤더 브랜딩 */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
+        <div className="relative p-5 border-b border-slate-800 flex items-center justify-between">
+          <UiBadge id="A00-NAV-LOGO01" name="관리자 콘솔 브랜딩 로고" />
           <Link href="/admin/dashboard" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center text-white shadow-md">
               <Building2 className="w-5 h-5" />
@@ -57,7 +59,8 @@ export default async function AdminLayout({
         </div>
 
         {/* 사용자 정보 미니 카드 */}
-        <div className="p-4 mx-3 my-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+        <div className="relative p-4 mx-3 my-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+          <UiBadge id="A00-NAV-USER01" name="관리자 사용자 정보 미니카드" />
           <div className="flex items-center justify-between mb-1">
             <span className="font-bold text-slate-200">{session.name}</span>
             <span
@@ -77,48 +80,54 @@ export default async function AdminLayout({
         <nav className="flex-1 px-3 py-2 space-y-1 text-xs font-semibold" aria-label="관리자 메뉴">
           <Link
             href="/admin/dashboard"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-DASH01" name="관리자 대시보드 메뉴" />
             <LayoutDashboard className="w-4 h-4 text-sky-400" />
             <span>대시보드</span>
           </Link>
 
           <Link
             href="/admin/posts"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-POST01" name="게시물 관리 메뉴" />
             <FileText className="w-4 h-4 text-emerald-400" />
             <span>게시물 관리 (알림/보도)</span>
           </Link>
 
           <Link
             href="/admin/programs"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-PROG01" name="사업안내 관리 메뉴" />
             <Briefcase className="w-4 h-4 text-amber-400" />
             <span>사업안내 관리</span>
           </Link>
 
           <Link
             href="/admin/resources"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-RESO01" name="자료실 관리 메뉴" />
             <BookOpen className="w-4 h-4 text-indigo-400" />
             <span>자료실 관리</span>
           </Link>
 
           <Link
             href="/admin/faqs"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-FAQS01" name="FAQ 관리 메뉴" />
             <HelpCircle className="w-4 h-4 text-rose-400" />
             <span>FAQ 관리</span>
           </Link>
 
           <Link
             href="/admin/banners"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-BNRS01" name="배너/퀵링크 관리 메뉴" />
             <Image className="w-4 h-4 text-purple-400" />
             <span>배너/퀵링크 관리</span>
           </Link>
@@ -130,8 +139,9 @@ export default async function AdminLayout({
           {session.role === 'admin' && (
             <Link
               href="/admin/users"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+              className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
             >
+              <UiBadge id="A00-NAV-USER02" name="관리자 계정 관리 메뉴" />
               <Users className="w-4 h-4 text-teal-400" />
               <span>관리자 계정 관리</span>
             </Link>
@@ -139,14 +149,16 @@ export default async function AdminLayout({
 
           <Link
             href="/admin/audit-logs"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-AUDT01" name="보안 감사로그 메뉴" />
             <History className="w-4 h-4 text-amber-400" />
             <span>보안 감사로그</span>
           </Link>
 
           {session.role === 'admin' && (
-            <div className="pt-2 px-1">
+            <div className="relative pt-2 px-1">
+              <UiBadge id="A00-NAV-RSET01" name="목데이터 초기화 리셋 버튼" />
               <DataResetButton className="w-full justify-start text-[11px] py-2" />
             </div>
           )}
@@ -157,8 +169,9 @@ export default async function AdminLayout({
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
+            className="sidebar-item relative flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-slate-900 transition-colors"
           >
+            <UiBadge id="A00-NAV-PORT01" name="공개 포털 열기 링크" />
             <span className="flex items-center gap-2">
               <ExternalLink className="w-3.5 h-3.5" />
               <span>공개 포털 열기</span>
@@ -166,7 +179,10 @@ export default async function AdminLayout({
             <span className="text-[10px] text-slate-500">새창</span>
           </Link>
 
-          <AdminLogoutButton username={session.username} />
+          <div className="relative">
+            <UiBadge id="A00-NAV-LOUT01" name="관리자 로그아웃 버튼" />
+            <AdminLogoutButton username={session.username} />
+          </div>
         </div>
       </aside>
 

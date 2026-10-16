@@ -3,6 +3,7 @@ import './globals.css';
 import SkipNav from '@/components/layout/SkipNav';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import UiInspector from '@/components/common/UiInspector';
 
 export const metadata: Metadata = {
   title: {
@@ -43,6 +44,7 @@ export default function RootLayout({
           {children}
         </div>
         <Footer />
+        <UiInspector />
       </body>
     </html>
   );
