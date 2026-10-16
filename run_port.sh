@@ -61,12 +61,16 @@ fi
 
 PORT="${PORT:-$DEFAULT_PORT}"
 
+check_socket_open() {
+  local host="${1:-127.0.0.1}"
+  local p="$2"
+  python3 -c "import socket; s = socket.socket(); s.settimeout(0.5); s.connect(('${host}', ${p})); s.close()" 2>/dev/null
+}
+
 is_port_in_use() {
   local p=$1
-  if (bash -c "(echo > /dev/tcp/127.0.0.1/${p}) >/dev/null 2>&1" 2>/dev/null); then
-    return 0
-  fi
-  return 1
+  local host="${2:-127.0.0.1}"
+  check_socket_open "$host" "$p"
 }
 
 get_pids() {
@@ -107,12 +111,50 @@ cmd_start() {
 
   echo -e "🚀 [:${p}] 미래스마트산업진흥원 포털 기동 중 (${mode} 모드, Host: ${DEFAULT_HOST})..."
 
-  # MongoDB 상태 점검 및 미가동 시 자동 실행
-  if ! is_port_in_use 27017; then
-    echo -e "   ${YELLOW}⚡ MongoDB (Port 27017) 미가동 감지. 데몬 자동 기동 중...${NC}"
-    mkdir -p /root/data/db
-    mongod --dbpath /root/data/db --fork --logpath /root/data/mongod.log --bind_ip 127.0.0.1 >/dev/null 2>&1 || true
-    sleep 1
+  # MongoDB 상태 점검
+  local env_file="${PROJECT_DIR}/.env"
+  local db_uri=""
+  if [ -f "$env_file" ]; then
+    db_uri=$(grep -E '^[[:space:]]*MONGODB_URI=' "$env_file" | head -n 1 | cut -d '=' -f2- | tr -d '"' | tr -d "'" | tr -d '\r')
+  fi
+
+  local db_host="127.0.0.1"
+  local db_port="27017"
+  if [ -n "$db_uri" ]; then
+    local ext_host=$(echo "$db_uri" | sed -E 's|^mongodb://([^:/@]+@)?([^:/@]+)(:([0-9]+))?.*|\2|')
+    local ext_port=$(echo "$db_uri" | sed -E 's|^mongodb://([^:/@]+@)?([^:/@]+)(:([0-9]+))?.*|\4|')
+    [ -n "$ext_host" ] && db_host="$ext_host"
+    [ -n "$ext_port" ] && db_port="$ext_port"
+  fi
+
+  # Docker 호스트 게이트웨이 탐색
+  local gw_hex=$(awk '$2 == "00000000" {print $3}' /proc/net/route 2>/dev/null | head -n 1)
+  local docker_gw=""
+  if [ -n "$gw_hex" ] && [ ${#gw_hex} -eq 8 ]; then
+    docker_gw=$(printf "%d.%d.%d.%d" "0x${gw_hex:6:2}" "0x${gw_hex:4:2}" "0x${gw_hex:2:2}" "0x${gw_hex:0:2}")
+  fi
+
+  local db_reachable=0
+  if check_socket_open "$db_host" "$db_port"; then
+    db_reachable=1
+  elif [ -n "$docker_gw" ] && { [ "$db_host" = "127.0.0.1" ] || [ "$db_host" = "localhost" ]; }; then
+    if check_socket_open "$docker_gw" "$db_port"; then
+      db_reachable=1
+      echo -e "   ${GREEN}✓ Docker 호스트 MongoDB 감지됨 (Host: ${docker_gw}:${db_port})${NC}"
+    fi
+  fi
+
+  if [ "$db_reachable" -eq 0 ]; then
+    if command -v mongod >/dev/null 2>&1; then
+      echo -e "   ${YELLOW}⚡ MongoDB (${db_host}:${db_port}) 미가동 감지. 데몬 자동 기동 중...${NC}"
+      mkdir -p /root/data/db
+      mongod --dbpath /root/data/db --fork --logpath /root/data/mongod.log --bind_ip 127.0.0.1 >/dev/null 2>&1 || true
+      sleep 1
+    else
+      echo -e "   ${YELLOW}⚠️ MongoDB (${db_host}:${db_port}) 미연결 (컨테이너 내 mongod 미설치. 외부/Docker MongoDB 확인 필요)${NC}"
+    fi
+  else
+    echo -e "   ${GREEN}✓ MongoDB (${db_host}:${db_port}) 연결 확인 완료${NC}"
   fi
 
   if [ "$mode" = "debug" ]; then
