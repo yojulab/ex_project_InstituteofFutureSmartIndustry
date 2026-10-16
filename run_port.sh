@@ -34,7 +34,13 @@ is_port_in_use() {
 }
 
 get_pids() {
-  pgrep -f "next.*(30013|dev|start)" 2>/dev/null || true
+  local pids
+  pids=$(fuser "${PORT}/tcp" 2>/dev/null | tr -s ' ' '\n' | grep -v '^$' || true)
+  if [ -n "$pids" ]; then
+    echo "$pids" | tr '\n' ' ' | sed 's/[[:space:]]*$//'
+    return
+  fi
+  pgrep -f "next.*(30013|dev|start|server)" 2>/dev/null || true
 }
 
 cmd_stop() {
@@ -109,6 +115,7 @@ cmd_status() {
 }
 
 ACTION="${1:-status}"
+TARGET_MODE="${2:-}"
 
 case "$ACTION" in
   dev)
@@ -118,7 +125,11 @@ case "$ACTION" in
     cmd_start "debug"
     ;;
   start|prod)
-    cmd_start "prod"
+    if [ "$TARGET_MODE" = "dev" ] || [ "$TARGET_MODE" = "debug" ]; then
+      cmd_start "$TARGET_MODE"
+    else
+      cmd_start "prod"
+    fi
     ;;
   stop)
     cmd_stop
@@ -126,13 +137,19 @@ case "$ACTION" in
   restart)
     cmd_stop
     sleep 1
-    cmd_start "dev"
+    if [ "$TARGET_MODE" = "prod" ] || [ "$TARGET_MODE" = "start" ]; then
+      cmd_start "prod"
+    elif [ "$TARGET_MODE" = "debug" ] || [ "$TARGET_MODE" = "dev:debug" ]; then
+      cmd_start "debug"
+    else
+      cmd_start "dev"
+    fi
     ;;
   status)
     cmd_status
     ;;
   *)
-    echo "사용법: ./run_port.sh [dev | dev:debug | start | stop | restart | status]"
+    echo "사용법: ./run_port.sh [dev | dev:debug | start | stop | restart [dev|prod|debug] | status]"
     exit 1
     ;;
 esac
