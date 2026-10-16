@@ -11,10 +11,10 @@
     "start:prod": "next start -H 0.0.0.0 -p ${PORT:-30013}",
     "start:30013": "next start -H 0.0.0.0 -p 30013",
     "lint": "eslint",
-    "seed": "tsx src/scripts/seed.ts",
-    "seed:reset": "tsx src/scripts/seed.ts --reset",
-    "db:reset": "tsx src/scripts/seed.ts --reset",
-    "build:search": "tsx src/scripts/build-search-index.ts"
+    "seed": "npx tsx src/scripts/seed.ts",
+    "seed:reset": "npx tsx src/scripts/seed.ts --reset",
+    "db:reset": "npx tsx src/scripts/seed.ts --reset",
+    "build:search": "npx tsx src/scripts/build-search-index.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
