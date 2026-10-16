@@ -92,6 +92,10 @@ export async function buildSearchIndex() {
   );
 
   console.log(`[Search Index Builder] Successfully created ${outputPath} with ${indexItems.length} items!`);
+  if (indexItems.length === 0) {
+    console.warn('  ⚠️ 안내: MongoDB에 등록된 데이터가 0건이어서 빈 인덱스가 생성되었습니다.');
+    console.warn('     초기 목업 데이터를 채우려면 "npm run seed"를 먼저 실행하십시오.');
+  }
 }
 
 if (require.main === module) {
