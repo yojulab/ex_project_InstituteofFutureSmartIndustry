@@ -79,57 +79,12 @@ export default async function AdminLayout({
         {/* 네비게이션 메뉴 */}
         <nav className="flex-1 px-3 py-2 space-y-1 text-xs font-semibold" aria-label="관리자 메뉴">
           <Link
-            href="/admin/dashboard"
-            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
-          >
-            <UiBadge id="A00-NAV-DASH01" name="관리자 대시보드 메뉴" />
-            <LayoutDashboard className="w-4 h-4 text-sky-400" />
-            <span>대시보드</span>
-          </Link>
-
-          <Link
             href="/admin/posts"
             className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
           >
             <UiBadge id="A00-NAV-POST01" name="게시물 관리 메뉴" />
             <FileText className="w-4 h-4 text-emerald-400" />
-            <span>게시물 관리 (알림/보도)</span>
-          </Link>
-
-          <Link
-            href="/admin/programs"
-            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
-          >
-            <UiBadge id="A00-NAV-PROG01" name="사업안내 관리 메뉴" />
-            <Briefcase className="w-4 h-4 text-amber-400" />
-            <span>사업안내 관리</span>
-          </Link>
-
-          <Link
-            href="/admin/resources"
-            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
-          >
-            <UiBadge id="A00-NAV-RESO01" name="자료실 관리 메뉴" />
-            <BookOpen className="w-4 h-4 text-indigo-400" />
-            <span>자료실 관리</span>
-          </Link>
-
-          <Link
-            href="/admin/faqs"
-            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
-          >
-            <UiBadge id="A00-NAV-FAQS01" name="FAQ 관리 메뉴" />
-            <HelpCircle className="w-4 h-4 text-rose-400" />
-            <span>FAQ 관리</span>
-          </Link>
-
-          <Link
-            href="/admin/banners"
-            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
-          >
-            <UiBadge id="A00-NAV-BNRS01" name="배너/퀵링크 관리 메뉴" />
-            <Image className="w-4 h-4 text-purple-400" />
-            <span>배너/퀵링크 관리</span>
+            <span>통합 게시물 관리</span>
           </Link>
 
           <div className="pt-3 pb-1 px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">

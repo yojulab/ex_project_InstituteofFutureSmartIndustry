@@ -4,14 +4,9 @@ import { connectToDatabase } from '@/lib/db';
 import { Post } from '@/models/Post';
 import { getCurrentSession } from '@/lib/auth/session';
 import { redirect } from 'next/navigation';
-import {
-  FileText,
-  PlusCircle,
-  Pin,
-  ExternalLink,
-  Edit,
-  Trash2,
-} from 'lucide-react';
+import { FileText, PlusCircle, Star, AlertCircle, Sparkles } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
+import PostListTable from './PostListTable';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,51 +17,35 @@ export default async function AdminPostsPage() {
   }
 
   await connectToDatabase();
-  const posts = await Post.find({ deletedAt: null })
-    .sort({ isPinned: -1, createdAt: -1 })
+  const rawPosts = await Post.find({ deletedAt: null })
+    .sort({ isFeatured: -1, createdAt: -1 })
     .lean();
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'published':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300">게시중</span>;
-      case 'draft':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300">임시저장</span>;
-      case 'scheduled':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/20 text-sky-300">예약</span>;
-      case 'hidden':
-        return <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300">비공개</span>;
-      default:
-        return null;
-    }
-  };
+  const featuredCount = rawPosts.filter((p) => p.isFeatured && p.status === 'public').length;
 
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case 'notice':
-        return '공지사항';
-      case 'press':
-        return '보도자료';
-      case 'event':
-        return '행사·교육';
-      case 'bid':
-        return '입찰·공모';
-      default:
-        return type;
-    }
-  };
+  const serializedPosts = rawPosts.map((p: any) => ({
+    _id: p._id.toString(),
+    category: p.category,
+    title: p.title,
+    slug: p.slug,
+    status: p.status,
+    isFeatured: Boolean(p.isFeatured),
+    eventDate: p.eventDate ? p.eventDate.toISOString() : undefined,
+    createdAt: p.createdAt ? p.createdAt.toISOString() : new Date().toISOString(),
+  }));
 
   return (
     <div className="space-y-6">
       {/* 헤더 바 */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <UiBadge id="A02-PST-HD01" name="게시물 관리 헤더 및 신규 등록 버튼" />
         <div>
           <div className="flex items-center gap-2 mb-1">
             <FileText className="w-5 h-5 text-emerald-400" />
-            <h1 className="text-xl font-extrabold text-white">게시물 관리 (알림마당)</h1>
+            <h1 className="text-xl font-extrabold text-white">통합 게시물 관리</h1>
           </div>
           <p className="text-xs text-slate-400">
-            공지사항, 보도자료, 행사·교육, 입찰공고 콘텐츠를 등록 및 관리합니다.
+            소식·성과(공지사항, 기관활동, 학술논문, 원장활동) 콘텐츠를 등록하고 메인 화면 노출을 제어합니다.
           </p>
         </div>
 
@@ -79,68 +58,47 @@ export default async function AdminPostsPage() {
         </Link>
       </div>
 
-      {/* 게시물 목록 테이블 */}
-      <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-sm">
-        <table className="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr className="bg-slate-900/80 text-slate-400 font-bold border-b border-slate-700">
-              <th className="py-3.5 px-4 w-14 text-center">상태</th>
-              <th className="py-3.5 px-4 w-24">분류</th>
-              <th className="py-3.5 px-4">제목</th>
-              <th className="py-3.5 px-4 w-28">담당부서</th>
-              <th className="py-3.5 px-4 w-28 text-center">등록일시</th>
-              <th className="py-3.5 px-4 w-28 text-center">포털열람</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-700/60 text-slate-300">
-            {posts.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="py-12 text-center text-slate-500">
-                  등록된 게시물이 없습니다.
-                </td>
-              </tr>
-            ) : (
-              posts.map((post: any) => (
-                <tr key={post._id.toString()} className="hover:bg-slate-700/40 transition-colors">
-                  <td className="py-3.5 px-4 text-center">
-                    {getStatusBadge(post.status)}
-                  </td>
-                  <td className="py-3.5 px-4 font-semibold text-slate-400">
-                    {getTypeLabel(post.type)}
-                  </td>
-                  <td className="py-3.5 px-4 font-bold text-white">
-                    <div className="flex items-center gap-2">
-                      {post.isPinned && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] text-amber-300 bg-amber-400/20 px-1.5 py-0.5 rounded font-bold">
-                          <Pin className="w-2.5 h-2.5" />
-                          고정
-                        </span>
-                      )}
-                      <span className="line-clamp-1">{post.title}</span>
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-400 truncate">
-                    {post.department || '-'}
-                  </td>
-                  <td className="py-3.5 px-4 text-center text-slate-400">
-                    {new Date(post.publishedAt || post.createdAt).toISOString().slice(0, 10)}
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <Link
-                      href={`/news/${post.type}/${post.slug}`}
-                      target="_blank"
-                      className="inline-flex items-center gap-1 text-sky-400 hover:text-sky-300 font-semibold"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>보기</span>
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      {/* 메인 화면 노출 현황 카드 (AC-07: 최대 3건 서버 엄격 검증) */}
+      <div className="relative p-5 rounded-2xl bg-gradient-to-r from-slate-800 to-slate-850 border border-slate-700/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <UiBadge id="A02-PST-FEAT01" name="메인 화면 노출 현황 요약 카드" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+            <Star className="w-5 h-5 fill-current" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-slate-200">메인 화면 노출 현황</span>
+              <span
+                className={`px-2 py-0.5 rounded text-[11px] font-extrabold ${
+                  featuredCount >= 3
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                    : 'bg-sky-500/20 text-sky-300 border border-sky-500/40'
+                }`}
+              >
+                {featuredCount} / 3건
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              메인 화면의 [주요 성과 및 활동] 섹션에는 최대 3건의 공개 게시물만 엄선 노출됩니다.
+            </p>
+          </div>
+        </div>
+
+        {featuredCount >= 3 ? (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>최대 한도(3건)에 도달했습니다.</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 text-xs text-sky-400 font-medium">
+            <Sparkles className="w-4 h-4" />
+            <span>{3 - featuredCount}건 추가 지정 가능</span>
+          </div>
+        )}
       </div>
+
+      {/* 인터랙티브 게시물 테이블 */}
+      <PostListTable initialPosts={serializedPosts} featuredCount={featuredCount} />
     </div>
   );
 }
