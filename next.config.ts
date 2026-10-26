@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     agentUpgrade: "security",
   },
+  serverExternalPackages: ['nodemailer', 'mongoose', 'bcryptjs'],
   allowedDevOrigins: ['localhost', '127.0.0.1', '0.0.0.0'],
   turbopack: {
     rules: {
