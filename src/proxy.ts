@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose';
 const SESSION_COOKIE_NAME =
   process.env.NODE_ENV === 'production' ? '__Host-admin-session' : 'admin_session';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. 관리자 공개 경로(로그인 페이지 및 로그인 API)는 패스
