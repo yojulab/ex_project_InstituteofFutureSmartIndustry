@@ -14,8 +14,7 @@
     "lint": "eslint",
     "seed": "npx tsx src/scripts/seed.ts",
     "seed:reset": "npx tsx src/scripts/seed.ts --reset",
-    "db:reset": "npx tsx src/scripts/seed.ts --reset",
-    "build:search": "npx tsx src/scripts/build-search-index.ts"
+    "db:reset": "npx tsx src/scripts/seed.ts --reset"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

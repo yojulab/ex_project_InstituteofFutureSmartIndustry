@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentSession } from '@/lib/auth/session';
-import { runSeed } from '@/scripts/seed';
+import { seedDatabase } from '@/scripts/seed';
 
 export async function POST(req: NextRequest) {
   try {
@@ -25,15 +25,13 @@ export async function POST(req: NextRequest) {
 
     console.log(`[Admin API] Data reset triggered by @${session.username} (IP: ${ip})`);
 
-    const result = await runSeed({
+    const result = await seedDatabase({
       reset: true,
       operatorUsername: session.username,
       operatorIp: ip,
     });
 
-    const message = result.dbCreated
-      ? `데이터베이스 '${result.dbName}'를 신규 생성하고 목업 데이터를 초기화했습니다.`
-      : `데이터베이스 '${result.dbName}' 목업 데이터가 성공적으로 초기화되었습니다.`;
+    const message = `데이터베이스 '${result.dbName}' 초기화 및 관리자 계정 동기화가 성공적으로 완료되었습니다.`;
 
     return NextResponse.json({
       success: true,

@@ -57,7 +57,9 @@ export function getDatabaseName(): string {
       return match[1].trim();
     }
   }
-  return 'smart_industry';
+  throw new Error(
+    '[CRITICAL CONFIG ERROR] MONGODB_URI에 데이터베이스 이름이 포함되어 있지 않습니다. 올바른 MongoDB 연결 문자열을 설정하십시오.'
+  );
 }
 
 /**
@@ -95,3 +97,26 @@ export function getInitialAdminConfig() {
     ),
   };
 }
+
+/**
+ * 문의 발송용 SMTP 서버 설정 (디폴트 금지)
+ */
+export function getSmtpConfig() {
+  return {
+    host: getRequiredEnv('SMTP_HOST', 'SMTP 설정 오류: [SMTP_HOST]가 정의되지 않았습니다.'),
+    port: parseInt(getRequiredEnv('SMTP_PORT', 'SMTP 설정 오류: [SMTP_PORT]가 정의되지 않았습니다.'), 10),
+    user: getRequiredEnv('SMTP_USER', 'SMTP 설정 오류: [SMTP_USER]가 정의되지 않았습니다.'),
+    pass: getRequiredEnv('SMTP_PASS', 'SMTP 설정 오류: [SMTP_PASS]가 정의되지 않았습니다.'),
+  };
+}
+
+/**
+ * 문의 메일 수신/발신 주소 설정 (디폴트 금지)
+ */
+export function getContactMailConfig() {
+  return {
+    to: getRequiredEnv('CONTACT_MAIL_TO', '문의 수신 이메일 설정 오류: [CONTACT_MAIL_TO]가 정의되지 않았습니다.'),
+    from: getRequiredEnv('CONTACT_MAIL_FROM', '문의 발신 이메일 설정 오류: [CONTACT_MAIL_FROM]가 정의되지 않았습니다.'),
+  };
+}
+

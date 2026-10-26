@@ -1,133 +1,45 @@
 import React from 'react';
-import { connectToDatabase } from '@/lib/db';
-import {
-  Banner,
-  SiteSetting,
-  QuickLink,
-  Program,
-  Post,
-  Resource,
-} from '@/models';
-import NoticeBanner from '@/components/home/NoticeBanner';
-import HeroSearch from '@/components/home/HeroSearch';
-import QuickLinksGrid from '@/components/home/QuickLinksGrid';
-import FeaturedPrograms from '@/components/home/FeaturedPrograms';
-import NewsTabs from '@/components/home/NewsTabs';
-import ResourceHighlights from '@/components/home/ResourceHighlights';
+import Link from 'next/link';
+import { ArrowRight, Sparkles, Building2, BookOpen, GraduationCap, Network } from 'lucide-react';
+import UiBadge from '@/components/common/UiBadge';
 
-export const revalidate = 60; // ISR 60초 캐싱 (관리자 변경 시 revalidatePath로 즉시 갱신)
-
-async function getHomeData() {
-  try {
-    await connectToDatabase();
-
-    const [banners, siteSetting, quickLinks, programs, posts, resources] = await Promise.all([
-      Banner.find({ isActive: true }).sort({ order: 1 }).lean(),
-      SiteSetting.findOne().lean(),
-      QuickLink.find({ isActive: true }).sort({ order: 1 }).lean(),
-      Program.find({ deletedAt: null, isFeatured: true }).sort({ order: 1 }).limit(6).lean(),
-      Post.find({ status: 'published', deletedAt: null })
-        .sort({ isPinned: -1, publishedAt: -1 })
-        .limit(15)
-        .lean(),
-      Resource.find({ deletedAt: null }).sort({ publishedAt: -1 }).limit(3).lean(),
-    ]);
-
-    return {
-      banners: banners.map((b: any) => ({
-        id: b._id.toString(),
-        title: b.title,
-        imageUrl: b.imageUrl,
-        altText: b.altText,
-        linkUrl: b.linkUrl || '',
-        isExternal: b.isExternal || false,
-      })),
-      siteSetting: siteSetting
-        ? {
-            visionStatement: siteSetting.visionStatement,
-            heroSubText: siteSetting.heroSubText,
-            popularKeywords: siteSetting.popularKeywords || [],
-          }
-        : undefined,
-      quickLinks: quickLinks.map((q: any) => ({
-        id: q._id.toString(),
-        title: q.title,
-        description: q.description || '',
-        icon: q.icon,
-        href: q.href,
-      })),
-      programs: programs.map((p: any) => ({
-        id: p._id.toString(),
-        slug: p.slug,
-        title: p.title,
-        category: p.category,
-        summary: p.summary,
-        target: p.target,
-        status: p.status,
-        periodText: p.period?.rawText || '상시 접수',
-        department: p.department,
-      })),
-      posts: posts.map((p: any) => ({
-        id: p._id.toString(),
-        type: p.type,
-        title: p.title,
-        slug: p.slug,
-        publishedAt: p.publishedAt ? new Date(p.publishedAt).toISOString() : new Date().toISOString(),
-        isPinned: p.isPinned || false,
-        department: p.department || '',
-      })),
-      resources: resources.map((r: any) => ({
-        id: r._id.toString(),
-        kind: r.kind,
-        title: r.title,
-        summary: r.summary || '',
-        authorOrDept: r.authorOrDept,
-        publishedAt: r.publishedAt ? new Date(r.publishedAt).toISOString() : new Date().toISOString(),
-        downloadCount: r.downloadCount || 0,
-        attachmentName: r.attachments?.[0]?.name,
-        attachmentUrl: r.attachments?.[0]?.url,
-        attachmentSize: r.attachments?.[0]?.size,
-      })),
-    };
-  } catch (error) {
-    console.error('[Home Page] Data fetching error, falling back to static defaults:', error);
-    return {
-      banners: [],
-      siteSetting: undefined,
-      quickLinks: [],
-      programs: [],
-      posts: [],
-      resources: [],
-    };
-  }
-}
-
-export default async function HomePage() {
-  const data = await getHomeData();
-
+export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 1. 공지 배너 */}
-      <NoticeBanner banners={data.banners} />
-
-      {/* 2. 히어로 + 중앙 검색 */}
-      <HeroSearch
-        visionStatement={data.siteSetting?.visionStatement}
-        heroSubText={data.siteSetting?.heroSubText}
-        popularKeywords={data.siteSetting?.popularKeywords}
-      />
-
-      {/* 3. 빠른 메뉴 (퀵링크 6종) */}
-      <QuickLinksGrid links={data.quickLinks} />
-
-      {/* 4. 주요 사업 안내 카드 (신청 폼 배제) */}
-      <FeaturedPrograms programs={data.programs} />
-
-      {/* 5. 새소식 탭 (공지/보도/행사) */}
-      <NewsTabs posts={data.posts} />
-
-      {/* 6. 자료실 하이라이트 */}
-      <ResourceHighlights resources={data.resources} />
+      {/* 대표 히어로 섹션 */}
+      <section className="relative py-20 sm:py-28 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 text-center">
+          <UiBadge id="P01-SEC01-HERO01" name="메인 히어로 비전 섹션" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-semibold mb-6">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>비영리 공공 목적 전문 단체</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto mb-6">
+            AI와 디지털 기술로<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-cyan-300">
+              미래산업의 변화
+            </span>를 준비합니다.
+          </h1>
+          <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed mb-8">
+            미래스마트산업진흥원은 인공지능·소프트웨어 분야의 조사·연구와 교육, 전문인력 양성, 기술 활용 및 산업 교류·협력을 추진하는 비영리 목적의 전문단체입니다.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-lg shadow-sky-600/30 transition-all hover:scale-[1.02]"
+            >
+              진흥원 소개 바로가기
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/business"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm border border-slate-700 transition-all"
+            >
+              주요사업 안내
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

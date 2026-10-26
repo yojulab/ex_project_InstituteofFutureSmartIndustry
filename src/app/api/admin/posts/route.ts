@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     await connectToDatabase();
     const posts = await Post.find({ deletedAt: null })
-      .sort({ isPinned: -1, createdAt: -1 })
+      .sort({ isFeatured: -1, createdAt: -1 })
       .lean();
 
     return NextResponse.json(posts);
@@ -49,15 +49,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '이미 사용 중인 슬러그(고유 식별자)입니다.' }, { status: 400 });
     }
 
+    // 메인 노출 3건 서버 엄격 제어 (지시서 5장 및 AC-07)
+    if (parseResult.data.isFeatured && parseResult.data.status === 'public') {
+      const featuredCount = await Post.countDocuments({
+        isFeatured: true,
+        status: 'public',
+        deletedAt: null,
+      });
+      if (featuredCount >= 3) {
+        return NextResponse.json(
+          { error: '메인 노출 게시물은 최대 3건까지만 지정할 수 있습니다. 기존 메인 노출 게시물을 먼저 해제해 주십시오.' },
+          { status: 409 }
+        );
+      }
+    }
+
     const newPost = await Post.create({
       ...parseResult.data,
-      publishedAt: parseResult.data.publishedAt || new Date(),
       createdBy: session.sub,
       updatedBy: session.sub,
     });
 
     // 온디맨드 ISR 캐시 갱신
-    revalidatePath('/news');
+    revalidatePath('/updates');
     revalidatePath('/');
 
     // 감사로그 기록
@@ -68,7 +82,7 @@ export async function POST(req: NextRequest) {
       action: 'CREATE',
       targetCollection: 'posts',
       targetId: newPost._id.toString(),
-      details: { title: newPost.title, type: newPost.type },
+      details: { title: newPost.title, category: newPost.category, isFeatured: newPost.isFeatured },
       ipAddress: ip,
     });
 
