@@ -97,6 +97,18 @@ export default function CourseForm({ initialData, isEdit = false }: CourseFormPr
   // 마크다운 상태 (텍스트 강좌용)
   const [markdownBody, setMarkdownBody] = useState(initialData?.markdownBody || '');
   const [mdPreviewTab, setMdPreviewTab] = useState<'edit' | 'preview'>('edit');
+
+  // 첨부파일 상태
+  const [attachments, setAttachments] = useState<AttachmentFormItem[]>(
+    initialData?.attachments || []
+  );
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadStatusText, setUploadStatusText] = useState<string>('');
+
+  // 폼 제출 상태
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   // 마크다운 내 상대경로 이미지 누락 검사 (파생 상태)
   const missingImages = useMemo<string[]>(() => {
     if (courseType !== 'markdown' || !markdownBody) return [];
