@@ -1,11 +1,12 @@
 import { MetadataRoute } from 'next';
 import { connectToDatabase } from '@/lib/db';
 import { Post } from '@/models/Post';
+import { getAppUrl } from '@/lib/config/env';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://smartindustry.or.kr';
+  const baseUrl = getAppUrl();
 
-  // 1. 7대 고정 페이지 정의
+  // 1. 고정 페이지 정의 (온라인 강좌 /lectures 포함)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/`,
@@ -29,6 +30,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/business`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/lectures`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
       priority: 0.9,
     },
     {

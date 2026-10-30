@@ -4,9 +4,10 @@ import SkipNav from '@/components/layout/SkipNav';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import UiInspector from '@/components/common/UiInspector';
+import { getAppUrl } from '@/lib/config/env';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:30013'),
+  metadataBase: new URL(getAppUrl()),
   title: {
     template: '%s | 미래스마트산업진흥원',
     default: '미래스마트산업진흥원 — 대한민국 제조 AI 및 스마트산업 혁신 선도',

@@ -120,3 +120,53 @@ export function getContactMailConfig() {
   };
 }
 
+/**
+ * 애플리케이션 공용 기본 URL 조회 (디폴트 금지)
+ * sitemap, robots, layout, metadataBase, canonical, OG 이미지 등에서 공통 사용
+ */
+export function getAppUrl(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL || process.env.BASE_URL;
+  if (!url || !url.trim()) {
+    throw new Error(
+      '[CRITICAL CONFIG ERROR] 필수 환경변수 [NEXT_PUBLIC_APP_URL] 또는 [BASE_URL]이 정의되지 않았습니다. .env 파일에 올바른 서비스 기본 URL을 설정하십시오.'
+    );
+  }
+  return url.trim().replace(/\/+$/, '');
+}
+
+export type StorageDriver = 'gcs' | 'local';
+
+export interface StorageConfig {
+  driver: StorageDriver;
+  mediaBucket?: string;
+  localStoragePath?: string;
+}
+
+/**
+ * 파일 스토리지 설정 (디폴트 금지, GCS 또는 로컬 드라이버 명시 필수)
+ */
+export function getStorageConfig(): StorageConfig {
+  const driver = (process.env.STORAGE_DRIVER || 'local') as StorageDriver;
+  if (driver !== 'gcs' && driver !== 'local') {
+    throw new Error(
+      `[CRITICAL CONFIG ERROR] STORAGE_DRIVER 설정 오류: [${driver}]는 유효하지 않습니다. 'gcs' 또는 'local' 중 하나를 명시하십시오.`
+    );
+  }
+
+  if (driver === 'gcs') {
+    return {
+      driver: 'gcs',
+      mediaBucket: getRequiredEnv(
+        'GCS_MEDIA_BUCKET',
+        '스토리지 설정 오류: GCS 드라이버 사용 시 [GCS_MEDIA_BUCKET]가 필수입니다.'
+      ),
+    };
+  }
+
+  return {
+    driver: 'local',
+    localStoragePath: process.env.LOCAL_STORAGE_PATH || './storage/uploads',
+  };
+}
+
+
