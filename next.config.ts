@@ -61,6 +61,7 @@ const nextConfig: NextConfig = {
       // 6. 관리자 기본 경로 -> /admin/posts
       { source: '/admin', destination: '/admin/posts', permanent: true },
       { source: '/admin/dashboard', destination: '/admin/posts', permanent: true },
+      { source: '/admin/lectures/write', destination: '/admin/lectures/new', permanent: true },
     ];
   },
 };
