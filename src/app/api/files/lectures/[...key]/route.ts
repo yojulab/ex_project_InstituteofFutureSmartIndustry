@@ -68,3 +68,4 @@ export async function GET(request: NextRequest, context: RouteContext) {
     return new NextResponse('파일 전송 중 오류가 발생했습니다.', { status: 500 });
   }
 }
+

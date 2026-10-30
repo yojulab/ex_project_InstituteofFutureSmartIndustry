@@ -106,3 +106,4 @@ export default async function LectureNoteDetailPage({ params }: NotePageProps) {
     </div>
   );
 }
+

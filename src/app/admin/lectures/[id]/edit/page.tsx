@@ -54,3 +54,4 @@ export default async function AdminEditLecturePage({ params }: EditCoursePagePro
     </div>
   );
 }
+

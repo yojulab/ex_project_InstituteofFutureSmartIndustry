@@ -109,3 +109,4 @@ export function getYouTubeEmbedUrl(
 
   return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
 }
+

@@ -402,3 +402,4 @@ runLecturesAcceptanceVerification().catch((err) => {
   console.error('검증 실행 오류:', err);
   process.exit(1);
 });
+

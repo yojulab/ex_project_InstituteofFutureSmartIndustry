@@ -41,3 +41,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || '파일 업로드 실패' }, { status: 400 });
   }
 }
+

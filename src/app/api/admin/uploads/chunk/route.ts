@@ -37,3 +37,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || '청크 업로드 실패' }, { status: 400 });
   }
 }
+

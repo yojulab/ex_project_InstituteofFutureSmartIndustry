@@ -93,3 +93,4 @@ export function verifyMagicBytes(buffer: Buffer, fileType: string): MagicByteChe
 
   return { valid: true };
 }
+

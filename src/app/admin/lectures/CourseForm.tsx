@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -97,53 +97,24 @@ export default function CourseForm({ initialData, isEdit = false }: CourseFormPr
   // 마크다운 상태 (텍스트 강좌용)
   const [markdownBody, setMarkdownBody] = useState(initialData?.markdownBody || '');
   const [mdPreviewTab, setMdPreviewTab] = useState<'edit' | 'preview'>('edit');
-  const [missingImages, setMissingImages] = useState<string[]>([]);
-
-  // 첨부파일 상태
-  const [attachments, setAttachments] = useState<AttachmentFormItem[]>(
-    initialData?.attachments || []
-  );
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [uploadStatusText, setUploadStatusText] = useState<string>('');
-
-  // 폼 제출 상태
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // 마크다운 내 상대경로 이미지 누락 검사
-  useEffect(() => {
-    if (courseType === 'markdown' && markdownBody) {
-      const imgRegex = /!\[.*?\]\((.*?)\)/g;
-      const detectedMissing: string[] = [];
-      let match: RegExpExecArray | null;
-      while ((match = imgRegex.exec(markdownBody)) !== null) {
-        const url = match[1];
-        if (
-          !url.startsWith('http://') &&
-          !url.startsWith('https://') &&
-          !url.startsWith('/api/files/')
-        ) {
-          detectedMissing.push(url);
-        }
+  // 마크다운 내 상대경로 이미지 누락 검사 (파생 상태)
+  const missingImages = useMemo<string[]>(() => {
+    if (courseType !== 'markdown' || !markdownBody) return [];
+    const imgRegex = /!\[.*?\]\((.*?)\)/g;
+    const detected: string[] = [];
+    let match: RegExpExecArray | null;
+    while ((match = imgRegex.exec(markdownBody)) !== null) {
+      const url = match[1];
+      if (
+        !url.startsWith('http://') &&
+        !url.startsWith('https://') &&
+        !url.startsWith('/api/files/')
+      ) {
+        detected.push(url);
       }
-      setMissingImages(detectedMissing);
-    } else {
-      setMissingImages([]);
     }
+    return detected;
   }, [courseType, markdownBody]);
-
-  // 첫 영상 유튜브 ID 변경 시 썸네일 자동 생성 연동
-  useEffect(() => {
-    if (autoThumbnailFromFirstVideo && courseType === 'video' && episodes.length > 0) {
-      const firstId = extractYouTubeVideoId(episodes[0].youtubeVideoId);
-      if (firstId) {
-        setThumbnailUrl(getYouTubeThumbnailUrl(firstId));
-        if (!thumbnailAlt && title) {
-          setThumbnailAlt(`${title} 대표 썸네일`);
-        }
-      }
-    }
-  }, [autoThumbnailFromFirstVideo, courseType, episodes, title, thumbnailAlt]);
 
   // 차시 행 추가
   const handleAddEpisode = () => {

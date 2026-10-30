@@ -32,3 +32,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || '업로드 세션 초기화 실패' }, { status: 400 });
   }
 }
+

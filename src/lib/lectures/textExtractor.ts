@@ -124,3 +124,4 @@ export async function extractTextFromFile(
   // PPTX 등은 Q3 결정에 따라 텍스트 추출을 건너뜁니다 (skipped)
   return { text: '', status: 'skipped' };
 }
+

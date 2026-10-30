@@ -319,3 +319,4 @@ export default async function LecturesPage({ searchParams }: LecturesPageProps) 
     </div>
   );
 }
+

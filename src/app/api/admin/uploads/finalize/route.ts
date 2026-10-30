@@ -34,3 +34,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || '업로드 완료 처리 실패' }, { status: 400 });
   }
 }
+

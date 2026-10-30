@@ -110,3 +110,4 @@ export default async function LectureDetailPage({ params }: LecturePageProps) {
     </div>
   );
 }
+

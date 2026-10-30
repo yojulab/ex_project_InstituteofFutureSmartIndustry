@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     // 썸네일 자동 추출 (체크 시 또는 미지정 시 첫 영상 썸네일)
     let thumbnailUrl = data.thumbnail.url;
-    let thumbnailSource = data.thumbnail.source;
+    const thumbnailSource = data.thumbnail.source;
     if (thumbnailSource === 'youtube' && normalizedEpisodes.length > 0 && !thumbnailUrl) {
       thumbnailUrl = getYouTubeThumbnailUrl(normalizedEpisodes[0].youtubeVideoId);
     }

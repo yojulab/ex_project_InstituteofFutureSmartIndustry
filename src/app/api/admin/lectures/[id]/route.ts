@@ -120,7 +120,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
     });
 
     let thumbnailUrl = data.thumbnail.url;
-    let thumbnailSource = data.thumbnail.source;
+    const thumbnailSource = data.thumbnail.source;
     if (thumbnailSource === 'youtube' && normalizedEpisodes.length > 0 && !thumbnailUrl) {
       thumbnailUrl = getYouTubeThumbnailUrl(normalizedEpisodes[0].youtubeVideoId);
     }

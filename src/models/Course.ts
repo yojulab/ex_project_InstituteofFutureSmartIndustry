@@ -199,3 +199,4 @@ CourseSchema.index(
 
 export const Course: Model<ICourse> =
   mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
+

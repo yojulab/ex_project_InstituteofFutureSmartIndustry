@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   ChevronLeft,
@@ -37,14 +37,13 @@ export default function NoteViewer({ course }: NoteViewerProps) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [previewPdfUrl, setPreviewPdfUrl] = useState<string | null>(null);
   const [lightboxImg, setLightboxImg] = useState<{ src: string; alt: string } | null>(null);
-  const [toc, setToc] = useState<TocItem[]>([]);
   const [activeTocId, setActiveTocId] = useState<string>('');
 
   const markdownContent = course.markdownBody || '';
 
-  // 본문에서 H2, H3 헤더 추출하여 TOC 구성
-  useEffect(() => {
-    if (!markdownContent) return;
+  // 본문에서 H2, H3 헤더 추출하여 TOC 구성 (파생 상태로 메모이제이션)
+  const toc = useMemo<TocItem[]>(() => {
+    if (!markdownContent) return [];
 
     const lines = markdownContent.split('\n');
     const items: TocItem[] = [];
@@ -64,7 +63,7 @@ export default function NoteViewer({ course }: NoteViewerProps) {
       }
     });
 
-    setToc(items);
+    return items;
   }, [markdownContent]);
 
   // 스크롤 감지 (Scrollspy)

@@ -98,3 +98,4 @@ LectureAttachmentSchema.index({ courseId: 1, episodeId: 1, createdAt: 1 });
 export const LectureAttachment: Model<ILectureAttachment> =
   mongoose.models.LectureAttachment ||
   mongoose.model<ILectureAttachment>('LectureAttachment', LectureAttachmentSchema);
+

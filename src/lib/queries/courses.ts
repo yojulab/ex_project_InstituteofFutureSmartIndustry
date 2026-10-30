@@ -226,3 +226,4 @@ export async function getFeaturedCourses(): Promise<CourseListItem[]> {
 
   return docs.map(mapToCourseListItem);
 }
+
