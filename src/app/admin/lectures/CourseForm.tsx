@@ -173,6 +173,16 @@ export default function CourseForm({ initialData, isEdit = false }: CourseFormPr
       next[index] = { ...next[index], [field]: value };
       return next;
     });
+
+    if (index === 0 && field === 'youtubeVideoId' && autoThumbnailFromFirstVideo) {
+      const vid = extractYouTubeVideoId(value);
+      if (vid) {
+        setThumbnailUrl(getYouTubeThumbnailUrl(vid));
+        if (!thumbnailAlt && title) {
+          setThumbnailAlt(`${title} 대표 썸네일`);
+        }
+      }
+    }
   };
 
   // 마크다운 .md 파일 업로드 시 로드

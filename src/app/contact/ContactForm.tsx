@@ -12,13 +12,8 @@ interface ContactFormProps {
 
 export const ContactForm: React.FC<ContactFormProps> = ({ initialType = 'coop' }) => {
   const [isPending, startTransition] = useTransition();
-  const [renderTimestamp, setRenderTimestamp] = useState<number>(0);
+  const [renderTimestamp, setRenderTimestamp] = useState<number>(() => Date.now());
   const [formState, setFormState] = useState<SubmitInquiryState | null>(null);
-
-  // 렌더링 시점 기록 (봇 초고속 제출 방지)
-  useEffect(() => {
-    setRenderTimestamp(Date.now());
-  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

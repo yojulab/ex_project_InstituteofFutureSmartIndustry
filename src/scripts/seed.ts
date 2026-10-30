@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { connectToDatabase } from '../lib/db';
 import { getInitialAdminConfig, getDatabaseName } from '../lib/config/env';
-import { AdminUser, Post, AuditLog } from '../models';
+import { AdminUser, Post, Course, LectureAttachment, AuditLog } from '../models';
 import { hashPassword } from '../lib/auth/password';
 
 export interface SeedOptions {
@@ -18,17 +18,21 @@ export interface SeedResult {
   counts: {
     adminUsers: number;
     posts: number;
+    courses: number;
+    attachments: number;
   };
 }
 
 /**
- * MVP 모델 인덱스 동기화 (AdminUser, Post, AuditLog)
+ * MVP 모델 인덱스 동기화 (AdminUser, Post, Course, LectureAttachment, AuditLog)
  */
 async function syncCoreIndexes(): Promise<void> {
   console.log('[Seed] ⚡ 모델 인덱스 동기화(syncIndexes)를 수행합니다...');
   await Promise.all([
     AdminUser.syncIndexes(),
     Post.syncIndexes(),
+    Course.syncIndexes(),
+    LectureAttachment.syncIndexes(),
     AuditLog.syncIndexes(),
   ]);
   console.log('   ✓ 핵심 모델 인덱스 동기화 완료');
@@ -69,8 +73,12 @@ export async function seedDatabase(options: SeedOptions = {}): Promise<SeedResul
   if (options.reset) {
     console.log('[Seed] ⚠️ --reset 옵션 감지: 레거시 및 기존 데이터 정리를 수행합니다.');
     await cleanupLegacyCollections();
-    await Post.deleteMany({});
-    console.log('   ✓ 모든 게시물 데이터 삭제 완료');
+    await Promise.all([
+      Post.deleteMany({}),
+      Course.deleteMany({}),
+      LectureAttachment.deleteMany({}),
+    ]);
+    console.log('   ✓ 모든 게시물 및 강좌/첨부 데이터 삭제 완료');
   }
 
   await syncCoreIndexes();
@@ -105,10 +113,12 @@ export async function seedDatabase(options: SeedOptions = {}): Promise<SeedResul
   }
 
   const postCount = await Post.countDocuments({ deletedAt: null });
+  const courseCount = await Course.countDocuments({ deletedAt: null });
+  const attachmentCount = await LectureAttachment.countDocuments({});
   const adminCount = await AdminUser.countDocuments({ isActive: true });
 
   console.log('\n========================================================');
-  console.log(`[Seed] 초기화 완료: 관리자 ${adminCount}명, 등록 게시물 ${postCount}건`);
+  console.log(`[Seed] 초기화 완료: 관리자 ${adminCount}명, 게시물 ${postCount}건, 강좌 ${courseCount}건`);
   console.log('========================================================\n');
 
   return {
@@ -119,6 +129,8 @@ export async function seedDatabase(options: SeedOptions = {}): Promise<SeedResul
     counts: {
       adminUsers: adminCount,
       posts: postCount,
+      courses: courseCount,
+      attachments: attachmentCount,
     },
   };
 }

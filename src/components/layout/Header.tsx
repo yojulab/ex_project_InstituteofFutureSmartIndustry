@@ -37,11 +37,6 @@ export const Header: React.FC = () => {
     };
   }, [isMobileMenuOpen]);
 
-  // 페이지 이동 시 메뉴 닫기
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
   // Esc 키로 모바일 메뉴 닫기 (접근성)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -182,6 +177,7 @@ export const Header: React.FC = () => {
                 <Link
                   key={item.title}
                   href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-lg font-bold transition-colors ${
                     isActive ? 'text-[#0284C7] bg-sky-50' : 'text-[#0F2C59] hover:bg-slate-50'
                   }`}
