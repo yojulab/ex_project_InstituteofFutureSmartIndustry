@@ -2,6 +2,7 @@ import React from 'react';
 import HeroSection from '@/components/home/HeroSection';
 import BusinessSection from '@/components/home/BusinessSection';
 import FeaturedPostsSection from '@/components/home/FeaturedPostsSection';
+import FeaturedCoursesSection from '@/components/home/FeaturedCoursesSection';
 import DirectorSummarySection from '@/components/home/DirectorSummarySection';
 import ContactCtaSection from '@/components/home/ContactCtaSection';
 import { getFeaturedPosts } from '@/lib/queries/posts';
@@ -23,10 +24,13 @@ export default async function HomePage() {
       {/* 3. 주요 성과 섹션 (최대 3건, 0건 시 섹션 전체 Hide) */}
       <FeaturedPostsSection posts={featuredPosts} />
 
-      {/* 4. 원장 프로필 요약 섹션 (학력-박사과정 명기, 실적 분리 고지) */}
+      {/* 4. 추천 온라인 강좌 섹션 (최대 3건, 0건 시 섹션 전체 Hide - Q6 반영) */}
+      <FeaturedCoursesSection />
+
+      {/* 5. 원장 프로필 요약 섹션 (학력-박사과정 명기, 실적 분리 고지) */}
       <DirectorSummarySection />
 
-      {/* 5. 협력 문의 섹션 */}
+      {/* 6. 협력 문의 섹션 */}
       <ContactCtaSection />
     </div>
   );

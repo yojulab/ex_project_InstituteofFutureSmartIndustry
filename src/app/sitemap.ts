@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next';
 import { connectToDatabase } from '@/lib/db';
 import { Post } from '@/models/Post';
+import { Course } from '@/models/Course';
 import { getAppUrl } from '@/lib/config/env';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -58,15 +59,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // 2. 데이터베이스 내 공개 게시물 동적 URL 생성
+  // 2. 데이터베이스 내 공개 게시물 & 공개 강좌 동적 URL 생성
   try {
     await connectToDatabase();
-    const publicPosts = await Post.find({
-      status: 'public',
-      deletedAt: null,
-    })
-      .select('slug updatedAt createdAt')
-      .lean();
+    const [publicPosts, publicCourses] = await Promise.all([
+      Post.find({
+        status: 'public',
+        deletedAt: null,
+      })
+        .select('slug updatedAt createdAt')
+        .lean(),
+      Course.find({
+        status: 'public',
+        deletedAt: null,
+      })
+        .select('slug courseType updatedAt createdAt')
+        .lean(),
+    ]);
 
     const postRoutes: MetadataRoute.Sitemap = publicPosts.map((post: any) => ({
       url: `${baseUrl}/updates/${post.slug}`,
@@ -75,9 +84,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticRoutes, ...postRoutes];
+    const courseRoutes: MetadataRoute.Sitemap = publicCourses.map((c: any) => ({
+      url: `${baseUrl}/lectures/${c.courseType === 'markdown' ? 'note/' : ''}${c.slug}`,
+      lastModified: c.updatedAt || c.createdAt || new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }));
+
+    return [...staticRoutes, ...postRoutes, ...courseRoutes];
   } catch (error) {
-    console.error('[Sitemap] Failed to fetch dynamic post routes:', error);
+    console.error('[Sitemap] Failed to fetch dynamic routes:', error);
     return staticRoutes;
   }
 }

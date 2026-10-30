@@ -35,17 +35,15 @@ export interface UploadSessionMeta {
 const activeSessions = new Map<string, UploadSessionMeta>();
 
 function getLocalStorageRoot(): string {
-  const config = getStorageConfig();
-  const root = config.localStoragePath || './storage/uploads';
-  const resolved = path.resolve(process.cwd(), root);
-  if (!fs.existsSync(resolved)) {
-    fs.mkdirSync(resolved, { recursive: true });
+  const root = path.join(process.cwd(), 'storage', 'uploads');
+  if (!fs.existsSync(root)) {
+    fs.mkdirSync(root, { recursive: true });
   }
-  return resolved;
+  return root;
 }
 
 function getLocalTmpRoot(): string {
-  const root = path.resolve(process.cwd(), './storage/tmp');
+  const root = path.join(process.cwd(), 'storage', 'tmp');
   if (!fs.existsSync(root)) {
     fs.mkdirSync(root, { recursive: true });
   }

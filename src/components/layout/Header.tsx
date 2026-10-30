@@ -11,10 +11,11 @@ interface NavItem {
   href: string;
 }
 
-// v3.0 확정 상위 4대 GNB (지시서 3.1)
+// v4.1 확정 상위 5대 GNB (온라인 강좌 신설 반영)
 const NAV_ITEMS: NavItem[] = [
   { title: '진흥원 소개', href: '/about' },
   { title: '주요사업', href: '/business' },
+  { title: '온라인 강좌', href: '/lectures' },
   { title: '소식·성과', href: '/updates' },
   { title: '문의하기', href: '/contact' },
 ];
