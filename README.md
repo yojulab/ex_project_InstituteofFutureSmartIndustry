@@ -89,46 +89,62 @@ INITIAL_ADMIN_PASSWORD=Admin1234!
 
 ---
 
-## 2. 서버 실행 및 포트 관리 (Any Host / Any Port)
+## 2. 통합 관리 스크립트 (`run_port.sh`)
 
-본 프로젝트는 외부 접속 허용을 위한 **Any Host(`0.0.0.0`) 바인딩** 및 **임의의 포트(`Any Port`) 동적 실행**을 지원합니다.
+본 프로젝트는 외부 접속 허용을 위한 **Any Host(`0.0.0.0`) 바인딩** 및 **임의의 포트(`Any Port`) 동적 실행**, **프로덕션 빌드/컴파일**을 단일 스크립트(`run_port.sh`)로 일원화하여 관리합니다.
 
-### 2-1. 서비스 기동 스크립트 (`start_server.sh`)
-
+### 2-1. 서비스 기동 및 상태 점검
 ```bash
-# 1. 개발 모드 기동 (기본 포트 30013)
-./start_server.sh dev
+# 1. 개발(dev) 모드 기동 (기본 포트 30013)
+./run_port.sh dev
+./run_port.sh dev 8080        # 임의 포트 지정
 
-# 2. 운영(Production) 모드 기동 (기본 포트 30013, 사전 빌드 자동 점검)
-./start_server.sh prod
+# 2. 운영(prod) 모드 기동 (사전 빌드 없으면 자동 컴파일 후 기동)
+./run_port.sh start
+./run_port.sh prod
+./run_port.sh prod 8080       # 임의 포트 지정
+./run_port.sh 8080            # 포트 번호만 입력 시 운영 모드 즉시 기동
 
-# 3. 운영 모드 임의 포트 기동 (Any Port 지원)
-./start_server.sh prod 8080
-# 또는 포트 번호만 입력
-./start_server.sh 8080
+# 3. 디버그 모드 기동 (Port 30013 + Node Inspector 30014)
+./run_port.sh debug
 
-# 4. 디버그 모드 기동 (Port 30013 + Node Inspector 30014)
-./start_server.sh debug
-
-# 5. 서비스 상태 점검
-./start_server.sh status
-./start_server.sh status 8080
+# 4. 서비스 상태 점검
+./run_port.sh status
+./run_port.sh status 8080
 ```
 
-### 2-2. 서비스 중지 및 재시작 스크립트
-
+### 2-2. 서비스 중지 및 재시작
 ```bash
-# 포트 프로세스 종료 (기본 30013 또는 지정 포트)
-./stop_server.sh
-./stop_server.sh 8080
+# 프로세스 종료 (기본 30013 또는 지정 포트)
+./run_port.sh stop
+./run_port.sh stop 8080
 
-# 포트 프로세스 재시작
-./restart_server.sh prod
-./restart_server.sh prod 8080
+# 서비스 재시작
+./run_port.sh restart
+./run_port.sh restart dev
+./run_port.sh restart prod 8080
 ```
 
-### 2-3. 로컬 MongoDB 자동 감지
-`./start_server.sh` 또는 `./run_port.sh` 실행 시 MongoDB 데몬(Port 27017) 미가동이 감지되면 `/root/data/db` 경로로 로컬 데몬을 자동 백그라운드 기동합니다.
+### 2-3. 컴파일 및 빌드
+```bash
+# 프로덕션 번들 전체 컴파일/빌드
+./run_port.sh compile
+# 또는
+npm run compile
+
+# TypeScript 정적 타입 검사
+./run_port.sh tsc
+
+# 빌드 캐시(.next) 정리 및 클린 재컴파일
+./run_port.sh clean
+./run_port.sh clean-build
+
+# 타입 검사 통과 후 전체 컴파일
+./run_port.sh check
+```
+
+### 2-4. 로컬 MongoDB 자동 감지
+`./run_port.sh` 실행 시 MongoDB 데몬(Port 27017) 미가동이 감지되면 `/root/data/db` 경로로 로컬 데몬을 자동 백그라운드 기동합니다.
 
 ---
 
