@@ -4,4 +4,5 @@ export * from './Inquiry';
 export * from './AuditLog';
 export * from './Course';
 export * from './LectureAttachment';
+export * from './SiteContent';
 

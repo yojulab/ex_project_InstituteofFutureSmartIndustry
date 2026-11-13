@@ -78,6 +78,20 @@ export function verifyMagicBytes(buffer: Buffer, fileType: string): MagicByteChe
       : { valid: false, error: '유효한 WebP 이미지 시그니처가 아닙니다.' };
   }
 
+  // 5-2. GIF: GIF87a / GIF89a (0x47 0x49 0x46 0x38 0x37/0x39 0x61)
+  if (normalizedType === 'gif') {
+    const isGif =
+      buffer[0] === 0x47 &&
+      buffer[1] === 0x49 &&
+      buffer[2] === 0x46 &&
+      buffer[3] === 0x38 &&
+      (buffer[4] === 0x37 || buffer[4] === 0x39) &&
+      buffer[5] === 0x61;
+    return isGif
+      ? { valid: true, detectedMime: 'image/gif' }
+      : { valid: false, error: '유효한 GIF 이미지 시그니처가 아닙니다.' };
+  }
+
   // 6. Markdown (.md) / 일반 텍스트: 이진 악성 실행 파일(ELF, MZ PE 등)이 아닌지 검사
   if (normalizedType === 'md' || normalizedType === 'text') {
     // 윈도우 실행파일 MZ 시그니처 (0x4D 0x5A)

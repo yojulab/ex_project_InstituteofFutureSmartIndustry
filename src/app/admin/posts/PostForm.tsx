@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -16,10 +16,10 @@ import {
   Link2,
   Image as ImageIcon,
   CheckCircle2,
+  UploadCloud,
+  Loader2,
 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeSanitize from 'rehype-sanitize';
+import WebEditor from '@/components/admin/WebEditor';
 import UiBadge from '@/components/common/UiBadge';
 
 export interface PostFormData {
@@ -82,10 +82,47 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
   // 썸네일 & 대체텍스트 (alt 필수)
   const [thumbnailUrl, setThumbnailUrl] = useState<string>(initialData?.thumbnail?.url || '');
   const [thumbnailAlt, setThumbnailAlt] = useState<string>(initialData?.thumbnail?.alt || '');
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
-  const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // 썸네일 파일 업로드 핸들러
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingThumbnail(true);
+      setErrorMessage(null);
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/uploads/image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || '썸네일 업로드 실패');
+      }
+
+      setThumbnailUrl(data.url);
+      if (!thumbnailAlt) {
+        setThumbnailAlt(file.name.replace(/\.[^/.]+$/, ''));
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || '썸네일 업로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsUploadingThumbnail(false);
+      if (thumbnailInputRef.current) {
+        thumbnailInputRef.current.value = '';
+      }
+    }
+  };
 
   // 슬러그 자동 생성 도우미 (신규 작성 시에만)
   const handleTitleChange = (val: string) => {
@@ -448,9 +485,40 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
       {/* 썸네일 및 웹 접근성 대체 텍스트 (alt 필수) */}
       <div className="relative bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-4">
         <UiBadge id="A02-PST-FORM-THMB01" name="썸네일 및 KWCAG 2.2 대체텍스트 입력" />
-        <div className="flex items-center gap-2 text-sky-300 font-bold text-xs">
-          <ImageIcon className="w-4 h-4" />
-          <span>썸네일 이미지 및 대체 텍스트 (웹 접근성 준수)</span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sky-300 font-bold text-xs">
+            <ImageIcon className="w-4 h-4" />
+            <span>썸네일 이미지 및 대체 텍스트 (웹 접근성 준수)</span>
+          </div>
+
+          {/* 썸네일 파일 업로드 버튼 */}
+          <div>
+            <input
+              type="file"
+              ref={thumbnailInputRef}
+              onChange={handleThumbnailUpload}
+              accept="image/png, image/jpeg, image/webp, image/gif"
+              className="hidden"
+            />
+            <button
+              type="button"
+              disabled={isUploadingThumbnail}
+              onClick={() => thumbnailInputRef.current?.click()}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600/30 hover:bg-sky-600/50 text-sky-300 border border-sky-500/40 text-xs font-bold transition-all disabled:opacity-50"
+            >
+              {isUploadingThumbnail ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>업로드 중...</span>
+                </>
+              ) : (
+                <>
+                  <UploadCloud className="w-3.5 h-3.5" />
+                  <span>내 PC에서 썸네일 업로드</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -462,7 +530,7 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
               type="text"
               value={thumbnailUrl}
               onChange={(e) => setThumbnailUrl(e.target.value)}
-              placeholder="예: /images/posts/sample.png 또는 https://..."
+              placeholder="예: /api/files/... 또는 https://..."
               className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs focus:border-sky-500 focus:outline-hidden"
             />
           </div>
@@ -480,63 +548,45 @@ export default function PostForm({ initialData, isEdit = false }: PostFormProps)
             />
           </div>
         </div>
+
+        {/* 썸네일 미리보기 */}
+        {thumbnailUrl && (
+          <div className="mt-2 p-3 bg-slate-900/60 rounded-xl border border-slate-700/60 flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={thumbnailUrl}
+              alt={thumbnailAlt || '썸네일 미리보기'}
+              className="w-20 h-14 object-cover rounded-lg border border-slate-700 shrink-0 bg-slate-950"
+            />
+            <div className="text-xs text-slate-400 truncate">
+              <span className="font-semibold text-slate-200 block truncate">{thumbnailUrl}</span>
+              <span className="text-[11px] text-slate-500">대체 텍스트: {thumbnailAlt || '(미입력)'}</span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* 마크다운 본문 에디터 및 실시간 살균 미리보기 */}
+      {/* 마크다운 웹 에디터 (서식 툴바 + 이미지 직접 업로드 포함) */}
       <div className="relative bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 space-y-4">
-        <UiBadge id="A02-PST-FORM-BODY01" name="마크다운 에디터 및 실시간 살균 미리보기" />
+        <UiBadge id="A02-PST-FORM-BODY01" name="웹 에디터 (서식 툴바 + 이미지 업로드)" />
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-slate-300">
-            본문 내용 (마크다운) <span className="text-rose-400">*</span>
-          </label>
-          <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-700 text-xs">
-            <button
-              type="button"
-              onClick={() => setActiveTab('edit')}
-              className={`flex items-center gap-1 px-3 py-1 rounded-md transition-colors ${
-                activeTab === 'edit'
-                  ? 'bg-sky-500 text-white font-bold'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>편집기</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('preview')}
-              className={`flex items-center gap-1 px-3 py-1 rounded-md transition-colors ${
-                activeTab === 'preview'
-                  ? 'bg-sky-500 text-white font-bold'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>미리보기</span>
-            </button>
+          <div>
+            <label className="block text-xs font-bold text-slate-300">
+              게시물 본문 (웹 에디터) <span className="text-rose-400">*</span>
+            </label>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              서식 도구(제목, 굵게, 표 등)와 <strong>이미지 업로드 버튼</strong>으로 풍부한 본문을 작성하세요.
+            </p>
           </div>
         </div>
 
-        {activeTab === 'edit' ? (
-          <textarea
-            rows={14}
-            required
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder="마크다운 문법(# 소제목, **강조**, - 목록 등)으로 작성하세요."
-            className="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs sm:text-sm font-mono leading-relaxed focus:border-sky-500 focus:outline-hidden"
-          />
-        ) : (
-          <div className="w-full min-h-[300px] p-6 bg-slate-950 border border-slate-700 rounded-xl prose prose-invert max-w-none text-slate-200 text-xs sm:text-sm">
-            {body ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
-                {body}
-              </ReactMarkdown>
-            ) : (
-              <span className="text-slate-500 text-xs">본문 내용을 입력하면 여기에 실시간 미리보기가 나타납니다.</span>
-            )}
-          </div>
-        )}
+        <WebEditor
+          value={body}
+          onChange={setBody}
+          placeholder="게시물 상세 내용을 작성하세요. 이미지 버튼이나 드래그 앤 드롭으로 사진을 바로 첨부할 수 있습니다."
+          minHeight="380px"
+          required
+        />
       </div>
 
       {/* 하단 고정 제출 버튼 바 */}

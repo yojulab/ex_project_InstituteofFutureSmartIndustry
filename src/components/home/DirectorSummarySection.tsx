@@ -2,8 +2,16 @@ import React from 'react';
 import Link from 'next/link';
 import { User, Award, BookOpen, GraduationCap, ArrowRight } from 'lucide-react';
 import UiBadge from '@/components/common/UiBadge';
+import { getSiteContent } from '@/lib/queries/contents';
 
-export const DirectorSummarySection: React.FC = () => {
+export const DirectorSummarySection: React.FC = async () => {
+  const content = await getSiteContent('director');
+  const meta = content.metadata || {};
+  const directorName = meta.directorName || '김범준';
+  const directorTitle =
+    meta.directorTitle || '25년 이상 AI·소프트웨어 실무 및 직업교육 전문가';
+  const profileImageUrl = meta.profileImageUrl || '';
+
   return (
     <section className="py-16 sm:py-24 bg-slate-50 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -14,22 +22,31 @@ export const DirectorSummarySection: React.FC = () => {
             {/* 좌측: 원장 프로필 아바타 / 사진 영역 */}
             <div className="lg:col-span-4 flex flex-col items-center text-center">
               <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl bg-gradient-to-br from-[#0F2C59] via-slate-800 to-sky-700 p-1 shadow-lg">
-                <div className="w-full h-full rounded-2xl bg-slate-800 flex flex-col items-center justify-center text-white p-4">
-                  <User className="w-16 h-16 text-sky-400 mb-2" />
-                  <span className="text-xs text-sky-300 font-medium">미래스마트산업진흥원</span>
-                  <span className="text-lg font-extrabold text-white">원장 김범준</span>
-                </div>
+                {profileImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profileImageUrl}
+                    alt={`${directorName} 원장 프로필 사진`}
+                    className="w-full h-full rounded-2xl object-cover bg-slate-900"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-2xl bg-slate-800 flex flex-col items-center justify-center text-white p-4">
+                    <User className="w-16 h-16 text-sky-400 mb-2" />
+                    <span className="text-xs text-sky-300 font-medium">미래스마트산업진흥원</span>
+                    <span className="text-lg font-extrabold text-white">원장 {directorName}</span>
+                  </div>
+                )}
               </div>
               <div className="mt-4">
-                <h3 className="text-xl font-bold text-slate-900">김범준 원장</h3>
-                <p className="text-xs text-slate-500 mt-1">25년 이상 AI·소프트웨어 실무 및 직업교육 전문가</p>
+                <h3 className="text-xl font-bold text-slate-900">{directorName} 원장</h3>
+                <p className="text-xs text-slate-500 mt-1">{directorTitle}</p>
                 <div className="mt-2 inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
                   컴퓨터공학 박사과정
                 </div>
               </div>
             </div>
 
-            {/* 우측: 핵심 경력 및 학술 활동 요약 (MOD-01, MOD-02 분리 고지) */}
+            {/* 우측: 핵심 경력 및 학술 활동 요약 */}
             <div className="lg:col-span-8 space-y-5">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#0284C7]">Leadership & Research</span>

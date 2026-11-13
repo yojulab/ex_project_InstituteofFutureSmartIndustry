@@ -16,6 +16,7 @@ export const ALLOWED_EXTENSIONS = [
   'jpeg',
   'png',
   'webp',
+  'gif',
 ] as const;
 
 export type AllowedExtension = (typeof ALLOWED_EXTENSIONS)[number];

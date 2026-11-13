@@ -97,6 +97,15 @@ export default async function AdminLayout({
             <span>온라인 강좌 관리</span>
           </Link>
 
+          <Link
+            href="/admin/contents"
+            className="sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition-colors"
+          >
+            <UiBadge id="A00-NAV-CONT01" name="소개·고정글 관리 메뉴" />
+            <Building2 className="w-4 h-4 text-amber-400" />
+            <span>소개·고정글 관리</span>
+          </Link>
+
           <div className="pt-3 pb-1 px-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">
             시스템 관리
           </div>

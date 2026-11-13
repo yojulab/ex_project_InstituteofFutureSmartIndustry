@@ -84,22 +84,45 @@ function serializePostDetailItem(doc: any): PostDetailItem {
 }
 
 /**
- * 메인 노출 승인 게시물 조회 (최대 3건, 0건 시 빈 배열)
- * 지시서 4.1항 & AC-07/AC-08 준수: status: 'public', isFeatured: true, deletedAt: null
+ * 메인 노출 게시물 조회 (최대 3건)
+ * 1. isFeatured: true 승인 게시물 우선 노출
+ * 2. 3건 미만일 시 최신 공개(public) 게시물로 보완하여 메인 화면에 소식이 항상 안정적으로 노출되도록 보장
  */
 export async function getFeaturedPosts(limit = 3): Promise<PostListItem[]> {
   try {
     await connectToDatabase();
-    const docs = await Post.find({
+    const maxLimit = Math.min(limit, 3);
+
+    // 1차: 메인 노출 지정(isFeatured: true) 게시물 우선 조회
+    const featuredDocs = await Post.find({
       status: 'public',
       isFeatured: true,
       deletedAt: null,
     })
       .sort({ eventDate: -1, createdAt: -1 })
-      .limit(Math.min(limit, 3))
+      .limit(maxLimit)
       .lean();
 
-    return docs.map(serializePostListItem);
+    const result = [...featuredDocs];
+
+    // 2차: 지정된 게시물이 maxLimit보다 적은 경우 최신 공개 게시물로 채움
+    if (result.length < maxLimit) {
+      const existingIds = result.map((d: any) => d._id);
+      const remainingLimit = maxLimit - result.length;
+
+      const fallbackDocs = await Post.find({
+        status: 'public',
+        deletedAt: null,
+        _id: { $nin: existingIds },
+      })
+        .sort({ eventDate: -1, createdAt: -1 })
+        .limit(remainingLimit)
+        .lean();
+
+      result.push(...fallbackDocs);
+    }
+
+    return result.map(serializePostListItem);
   } catch (error) {
     console.error('[Queries] getFeaturedPosts error:', error);
     return [];
