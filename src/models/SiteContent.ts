@@ -51,3 +51,4 @@ const SiteContentSchema = new Schema<ISiteContent>(
 
 export const SiteContent: Model<ISiteContent> =
   mongoose.models.SiteContent || mongoose.model<ISiteContent>('SiteContent', SiteContentSchema);
+

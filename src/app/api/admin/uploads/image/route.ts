@@ -55,3 +55,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || '이미지 업로드에 실패했습니다.' }, { status: 400 });
   }
 }
+
