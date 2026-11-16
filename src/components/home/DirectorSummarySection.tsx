@@ -12,6 +12,13 @@ export const DirectorSummarySection: React.FC = async () => {
     meta.directorTitle || '25년 이상 AI·소프트웨어 실무 및 직업교육 전문가';
   const profileImageUrl = meta.profileImageUrl || '';
 
+  const educationList: string[] = Array.isArray(meta.education)
+    ? meta.education.filter(Boolean)
+    : typeof meta.education === 'string' && meta.education
+    ? [meta.education]
+    : [];
+  const primaryEducation = educationList[0] || '컴퓨터공학 박사과정';
+
   return (
     <section className="py-16 sm:py-24 bg-slate-50 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -41,7 +48,7 @@ export const DirectorSummarySection: React.FC = async () => {
                 <h3 className="text-xl font-bold text-slate-900">{directorName} 원장</h3>
                 <p className="text-xs text-slate-500 mt-1">{directorTitle}</p>
                 <div className="mt-2 inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-[11px] font-medium text-slate-600">
-                  컴퓨터공학 박사과정
+                  {primaryEducation}
                 </div>
               </div>
             </div>
@@ -66,7 +73,7 @@ export const DirectorSummarySection: React.FC = async () => {
                     <span>학력 및 전문분야</span>
                   </div>
                   <p className="text-xs text-slate-600 leading-normal">
-                    컴퓨터공학 박사과정<br />
+                    {primaryEducation}<br />
                     AI 보안 및 정보윤리 연구
                   </p>
                 </div>
